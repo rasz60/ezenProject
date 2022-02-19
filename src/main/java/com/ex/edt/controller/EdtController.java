@@ -16,6 +16,7 @@ import com.ex.edt.DAO.ProductDAO;
  */
 @Controller
 public class EdtController {
+	
 	private static final Logger logger = LoggerFactory.getLogger(EdtController.class);
 	
 	/**
