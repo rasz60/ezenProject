@@ -1,4 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>  
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %> 
+<%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>   
+<%@ taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>  
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -41,50 +46,20 @@
 				<span class="filter" data-value="p_price" >낮은 가격순</span>
 				<span class="filter" data-value="p_price DESC" >높은 가격순</span>
 	        </div>
-		<%	
-			PreparedStatement pstmt = null;
-			ResultSet rs = null;
-			String brand = request.getParameter("brand");
-			String gender = request.getParameter("gender");
-			String filter = request.getParameter("filter");
-			String sql = "SELECT * FROM product3";
-			
-			if( brand != null || gender != null ) {
-				sql += " WHERE";
-			}
-			
-			if ( brand != null && gender != null ) {
-				sql += " p_brand = " + brand + " AND p_gender = " + gender;
-			} else if ( brand == null && gender != null ) {
-				sql += " p_gender = " + gender;
-			} else if ( brand != null && gender == null ) {
-				sql += " p_brand = " + brand;
-			} 
-			
-			if( filter != null) {
-				sql += " ORDER BY " + filter;
-			}
-			
-			pstmt = conn.prepareStatement(sql); 
-			rs = pstmt.executeQuery();
-			while(rs.next()){
-		%>
-		<div class="product">	        
-		    <div class="wrap">      
-		        <a href="product.jsp?p_id=<%=rs.getString("p_id")%>"><img src="resources/img/p_img/<%=rs.getString("p_image")%>" alt="no"></a>
-		    </div>
+			<c:forEach var="product" items="${pVos} }">
+			<div class="product">	        
+			    <div class="wrap">      
+			        <a href="product.jsp?p_id=${product.pId} }"><img src="resources/img/p_img/${product.pImage}" alt="no"></a>
+		   		</div>
+		   	</div>
+		   	
 		    <div class="product_info">
-		      	<p class="brand"><a href="products.jsp?brand='<%=rs.getString("p_brand")%>'"><%=rs.getString("p_brand")%></a></p>
-		        <p class="ename"><a href="#"><%=rs.getString("p_ename")%></a></p>
-		        <p class="kname"><%=rs.getString("p_kname")%></p>
-		        <h3><a href="#"><%=rs.getString("p_price").replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")%>원</a></h3>
+		      	<p class="brand"><a href="products.jsp?brand='${product.pBrand}'">${product.pBrand}</a></p>
+		        <p class="ename"><a href="#">${product.pEname}</a></p>
+		        <p class="kname">${product.pKname}</p>
+		        <h3><a href="#"><fmt:formatNumber value="${product.pPrice}" pattern="#,###"/>원</a></h3>
 		    </div>
-		</div>
-		<% }
-			rs.close();
-			pstmt.close();
-			conn.close();
-		%>
+		    </c:forEach>
 		</div>
     </section>
     

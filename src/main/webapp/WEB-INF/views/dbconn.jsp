@@ -3,16 +3,21 @@
 <%
 	Connection conn=null; //DB를 연동하여 여러 작업을 수행하기 위해 필요
 	
+	String driver = "com.mysql.cj.jdbc.Driver";
+	String url = "jdbc:mysql://localhost:3306/scott";
+	
+	
+	/* window sql developer
 	String driver = "oracle.jdbc.driver.OracleDriver";
 	String url = "jdbc:oracle:thin:@localhost:1521:XE";
-	
+	*/
 	
 	
 	Boolean connect = false;
 		
 	try{
 	    Class.forName(driver);//JDBC드라이버 로딩
-	    conn = DriverManager.getConnection(url,"scott","tiger"); 
+	    conn = DriverManager.getConnection(url,"root","1234"); 
 	    //자신의 아이디와 비밀번호
 	    connect = true;
 	    
