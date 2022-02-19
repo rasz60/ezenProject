@@ -41,8 +41,8 @@ public class HomeController {
 		return "draw";
 	}
 	
-	@RequestMapping(value = "/shop")
-	public String shop() {
+	@RequestMapping(value = "/products")
+	public String products() {
 		return "products";
 	}
 

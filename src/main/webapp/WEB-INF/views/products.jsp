@@ -26,7 +26,7 @@
         <div class="kind_menu">
             <h1>BRAND</h1>
             <ul>
-           		<li class="brand_menu"><a href="products.jsp">ALL BRAND</a></li>
+           		<li class="brand_menu"><a href="products">ALL BRAND</a></li>
                 <li class="brand_menu"><a href="?brand='JORDAN'">JORDAN</a></li>
                 <li class="brand_menu"><a href="?brand='NIKE'">NIKE</a></li>
                 <li class="brand_menu"><a href="?brand='ADIDAS'">ADIDAS</a></li>
