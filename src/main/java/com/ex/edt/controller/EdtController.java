@@ -16,7 +16,6 @@ import com.ex.edt.DAO.ProductDAO;
  */
 @Controller
 public class EdtController {
-	ProductDAO pDao;
 	private static final Logger logger = LoggerFactory.getLogger(EdtController.class);
 	
 	/**
@@ -38,7 +37,6 @@ public class EdtController {
 	public ModelAndView products() {
 		ModelAndView mv = new ModelAndView();
 		System.out.println("gotoPRODUCTS()");
-		mv.addObject("pVos", pDao.getProductsList("", "", ""));
 		mv.setViewName("products");
 		return mv;
 	}
