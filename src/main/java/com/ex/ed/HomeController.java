@@ -33,7 +33,21 @@ public class HomeController {
 		
 		model.addAttribute("serverTime", formattedDate );
 		
-		return "home";
+		return "main";
 	}
 	
+	@RequestMapping(value = "/draw")
+	public String draw() {
+		return "draw";
+	}
+	
+	@RequestMapping(value = "/shop")
+	public String shop() {
+		return "products";
+	}
+
+	@RequestMapping(value = "/join")
+	public String join() {
+		return "join";
+	}
 }
