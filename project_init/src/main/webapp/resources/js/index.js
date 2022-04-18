@@ -1,6 +1,3 @@
-
-
-
 //메인 필터객체 생성
 var mainFilter = document.querySelector('.main-filter');
 //메인 필터 객체에 변화가 생겼을 때 이벤트가 실행될 수 있는 onchange이벤트 생성

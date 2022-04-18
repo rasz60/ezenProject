@@ -84,7 +84,7 @@
 								<p class="h5 font-italic ml-2">Anonymous</p>
 							</div>
 							<div class="row mx-0">
-								<a href="#" class="text-secondary font-italic col-10 px-1">Find your info <i class="fa-regular fa-circle-question"></i></a>
+								<a href="#" class="text-secondary font-italic col-10 px-1 findInfo">Find your info <i class="fa-regular fa-circle-question"></i></a>
 								<button type="button" id="loginBtn" class="logx-btn btn btn-primary btn-sm col-2">
 									<i class="fa-solid fa-lock"></i>
 								</button>
@@ -93,7 +93,7 @@
 						
 					</s:authorize>
 					
-					<s:authorize access="isAuthenticated()">				
+					<s:authorize access="isAuthenticated()">			
 						<div class="profile-img col-3">
 							<c:if test="${user.userProfileImg == null}">
 								<s:authorize access="hasRole('ROLE_USER')">
@@ -668,11 +668,11 @@
 	</div>
 </section>
 <%@ include file="includes/login_modal.jsp" %>
+<%@ include file="includes/find_info_modal.jsp" %>
 <%@ include file="includes/modalPost.jsp" %>
 <%@ include file="includes/footer.jsp" %>
 
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b3f997f12f2b7a81b668be4e73a0fb98&libraries=clusterer"></script>
-
 <script src="/init/js/index.js"></script>
 
 <script>
@@ -680,6 +680,12 @@
 $('#loginBtn').click(function() {
 	$('#loginModalBtn').trigger('click');
 });
+
+$('a.findInfo').click(function() {
+	$('#modalCloseBtn').trigger('click');
+	$('#findInfoModalBtn').trigger('click');
+});
+
 
 <c:if test='${not empty error}'>
 	$('#loginError').css('visibility','visible');

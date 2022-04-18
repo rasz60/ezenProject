@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -95,24 +96,34 @@ public class UserController {
 		logger.info("emailCheck(" + nick + ") result : " + (res > 0 ? "success": "false"));
 		return res;
 	}
-	
+	/*
+	// 권한 없는 사용자가 url로 페이지 접근시 처리하려고 했으나 적용 안됨.. 
+	@RequestMapping("/needLogin")
+	public String needLogin(RedirectAttributes rttr) {
+		logger.info("needLogin() in >>> ");
+		
+		rttr.addFlashAttribute("needlogin", "로그인이 필요합니다.");
 
+		logger.info("needLogin() result : needLogin");
+		
+		return "redirect:/";
+	}
+	*/
+	
 	@RequestMapping(value="/processLogin")
 	public String processLogin(@RequestParam(value="error", required = false) String error, 
-							   @RequestParam(value="logout", required = false) String logout, Model model, RedirectAttributes rttr) {
+							   @RequestParam(value="logout", required = false) String logout, 
+							   HttpServletRequest request, HttpServletResponse response,
+							   Model model, RedirectAttributes rttr) {
 		
 		logger.info("processLogin() in >>> ");
-		
+
 		if(error != null && error !="") {
-			model.addAttribute("error", "아이디나 비밀번호가 잘못되었습니다.");
-			
 			rttr.addFlashAttribute("error", "아이디나 비밀번호가 잘못되었습니다.");
 			logger.info("processLogin() result : error");
 		}
 		
 		if(logout != null && logout != "") {
-			Constant.username = "";
-			
 			logger.info("processLogin() result : logout");
 		}
 		

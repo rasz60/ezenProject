@@ -24,26 +24,26 @@ public class CustomUserDetailsService implements UserDetailsService {
 		if(dto == null) {
 			System.out.println("null");
 			
-			//½ºÇÁ¸µ ½ÃÅ¥¸®Æ¼¿¡¼­ ¿¹¿Ü¸¦ Ã³¸®ÇÏ¿© ·Î±×ÀÎ ½ÇÆĞ Ã³¸®
+			//ë¡œê·¸ì¸ ì‹¤íŒ¨ì‹œ exception ë°œìƒ
 			throw new UsernameNotFoundException("No user found with username");
 			
 		}
 		
-		if(!UserDto.isEnabled()) { //°èÁ¤ÀÌ ºñÈ°¼ºÈ­µÈ °æ¿ì 
+		if(!UserDto.isEnabled()) { //ë¹„í™œì„±í™”ëœ ìœ ì €ì¸ ê²½ìš° disabledException ë°œìƒ 
 			throw new DisabledException("Ban User : " + username);
 		}
 		
-		String pw = dto.getUserPw(); // ¾ÏÈ£È­µÈ ÆĞ½º¿öµå
+		String pw = dto.getUserPw(); // ï¿½ï¿½È£È­ï¿½ï¿½ ï¿½Ğ½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-		//role°ª(±ÇÇÑ ±¸ºĞ °ª, ROLE_USER,ROLE_ADMIN,ROLE_MANAGE µî)À» ÀúÀåÇÏ´Â ¸®½ºÆ® °´Ã¼
+		//roleï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½, ROLE_USER,ROLE_ADMIN,ROLE_MANAGE ï¿½ï¿½)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½Ã¼
 		Collection<SimpleGrantedAuthority> roles = new ArrayList<SimpleGrantedAuthority>();
 
 		roles.add(new SimpleGrantedAuthority(dto.getUserAuthority()));
 
-		//¾òÀº id,pw,roles¸¦ ÀÌ¿ëÇÏ¿© UserDetails°´Ã¼¸¦ ¸¸µé¾î ¹İÈ¯ÇØÁÜ
+		//ï¿½ï¿½ï¿½ï¿½ id,pw,rolesï¿½ï¿½ ï¿½Ì¿ï¿½ï¿½Ï¿ï¿½ UserDetailsï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ï¿½ï¿½
 		UserDetails user = new User(username, pw, roles);
 		
-		//spring¿¡¼­ pwÀÏÄ¡ ¿©ºÎ Ã¼Å©ÇÏ°í ±ÇÇÑ ¼³Á¤ µîÀÇ ÀÛ¾÷ ÇØÁÜ
+		//springï¿½ï¿½ï¿½ï¿½ pwï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ Ã¼Å©ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Û¾ï¿½ ï¿½ï¿½ï¿½ï¿½
 		return user; 
 	}
 
