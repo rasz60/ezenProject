@@ -12,6 +12,7 @@
 <link rel="stylesheet" type="text/css" href="/init/css/includes/login_modal.css" />
 <!-- naver login script -->
 <script src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js" charset="utf-8"></script>
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 
 <title>login</title>
 
@@ -136,12 +137,53 @@ function onSignInFailure(t){
 	
 	naverLogin.init();
 	
-
-
-	
 </script>
 
+<script>
 
+Kakao.init('4b27bea0673ec02040a9741b089495fb');
+console.log(Kakao.isInitialized());
+
+$('#klogin').click(function kakaologin() {
+    Kakao.Auth.login({
+        success: function (response) {
+        	Kakao.API.request({
+            	url: '/v2/user/me',
+            	success: function (response) {
+          			console.log(response);
+          			
+          			var userId = response.kakao_account.email;
+          			var userPwd = response.id;
+          			
+          			$.ajax({
+          				url: '/init/user/emailCheck',
+          				type: 'get',
+          				data: {id : userId},
+          				success : function(data) {
+          					if ( data > 0 ) {
+          	       				$('input#userId').val(userId);
+          	       				$('input#userPwd').val(userPwd);
+          	       				
+          	       				$('#ModalLoginBtn').trigger('click');
+          					} else {
+          	       				location.href = '/init/user/socialjoin?userId='+ userId + '&userPwd=' + userPwd;      				
+          	       			}
+          				}
+          			})
+            	},
+
+            	fail: function (error) {
+            		console.log(error)
+        		}
+        	})
+        },
+        fail: function (error) {
+        	console.log(error)
+        },
+    })
+});
+
+</script>
 
 
 

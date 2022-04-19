@@ -82,15 +82,9 @@ public class HomeController {
 			System.out.println("진입");
 			
 		} 
-		/*
-		// 권한 없는 사용자가 url로 페이지 접근시 처리하려고 했으나 적용 안됨.. 
-		if ( flashMap != null && flashMap.containsKey("needlogin") ) {
-			
-			model.addAttribute("needlogin", (String)flashMap.get("needlogin"));
-			
-			System.out.println("진입");
-		}
-		*/
+		
+		
+
 		ArrayList<PostDto> post = postDao.list(uId);
 		model.addAttribute("post", post);
 		

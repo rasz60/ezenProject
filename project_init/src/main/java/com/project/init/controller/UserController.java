@@ -176,7 +176,7 @@ public class UserController {
 
 		udao.userVisit(uId); //占싸깍옙占쏙옙 占쏙옙짜 占쏙옙占쏙옙占쏙옙트
 		
-		rttr.addAttribute("login", uId);
+		rttr.addFlashAttribute("login", uId);
 		
 		logger.info("loginSuc() userAuth : " + auth);
 		
