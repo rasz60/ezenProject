@@ -1,6 +1,8 @@
 package com.project.init.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,9 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,10 +22,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import com.project.init.command.ICommand;
 import com.project.init.command.JoinCommand;
 import com.project.init.dao.UserDao;
+import com.project.init.dto.UserDto;
 import com.project.init.util.Constant;
 
 @Controller
@@ -51,10 +53,39 @@ public class UserController {
 	private ICommand mcom;
 	
 	@RequestMapping("/user/join_view")
-	public String join() {
+	public String join(HttpServletRequest request, Model model) {
 		logger.info("join_view() in >>> ");
+		
+		Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
+		
+		if ( flashMap != null ) {
+			model.addAttribute("socialInfo", (UserDto)flashMap.get("social"));
+		}
+		
 		return "join/join";
 	}
+	
+	@RequestMapping("/user/socialjoin")
+	public String socialjoin(@RequestParam("userId") String userId,
+							 @RequestParam("userPwd") String userPwd,
+ 							 RedirectAttributes rttr) {
+		
+		UserDto tmp = new UserDto();
+		tmp.setUserEmail(userId);
+		tmp.setUserPw(userPwd);
+		
+		rttr.addFlashAttribute("social", tmp);		
+		
+		return "redirect:/user/join_view";
+	}
+	
+	@RequestMapping("/nlogin")
+	public String nlogin() {
+
+		return "nlogin";
+	}
+	
+	
 	
 	@RequestMapping(value = "/user/join", method=RequestMethod.POST, produces = "application/text; charset=UTF8")
 	@ResponseBody

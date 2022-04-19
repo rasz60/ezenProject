@@ -28,8 +28,8 @@
 <link rel="stylesheet" type="text/css" href="../css/includes/footer.css" />
 <link rel="stylesheet" type="text/css" href="../css/join/join.css" />
 <title>WAYG</title>
-
 </head>
+
 <body>
 <%@ include file="../includes/roader.jsp" %>
 <%@ include file="../includes/header.jsp" %>
@@ -209,6 +209,35 @@
 <script src="../js/join/join.js"></script>
 
 <script>
+// 가입되지 않은 아이디로 소셜로그인했을 때 
+var socialEmail = '';
+var socialPw = '';
+
+<c:if test="${not empty socialInfo}">
+	socialEmail = '<c:out value="${socialInfo.userEmail}" />';
+	socialPw = '<c:out value="${socialInfo.userPw}" />';
+</c:if>
+
+if ( socialEmail != '' && socialPw != '' ) {
+	$('#userEmail').val(socialEmail);
+	$('#userEmail').attr('readonly', true);
+	
+	$('#emailCert').attr('required', false);
+	
+	
+	$('#userPw1').val(socialPw);
+	$('#userPw1').attr('readonly', true);
+	
+	$('#userPw2').val(socialPw);
+	$('#userPw2').attr('readonly', true);
+	
+	
+	var chkEmail = true;
+	var chkPw1 = true;
+	var chkPw2 = true;
+}
+
+console.log(socialPw);
 
 // 메일 인증
 $('#mailCheck').click(function() {
