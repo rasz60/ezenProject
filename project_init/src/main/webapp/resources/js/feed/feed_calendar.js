@@ -594,27 +594,6 @@ $(document).ready(function() {
 			// 클릭된 요소에 active 클래스 부여
 			$(this).parent().addClass('active');
 			
-			
-			// 해당되는 페이지 jsp 파일을 #main-body에 뿌려주는 ajax
-			/*
-			$.ajax({
-				url: url,
-				type: 'get',
-				success: function(data) {
-					// post에서 더보기 버튼으로 늘어났을 때, main-body의 height를 초기화
-					var height = $('#main-body').height(1000);
-					if ( Number(height) > 1000 ) {
-						$('#main-body').height(1000);
-					};
-					$('#main-body').html(data);
-					
-				},
-				error: function(data) {
-					console.log(data);
-					alert('ajax 실패');
-				}
-			})
-			*/
 		}
 	});
 	

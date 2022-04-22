@@ -101,8 +101,8 @@
 					<div class="userEmail-validation validation mt-1">
 					</div>
 				</div>
+
 				<button type="button" id="mailCheck" class="btn btn-sm btn-dark ml-1 col-1" disabled="true"><i class="fa-solid fa-at"></i></button>
-				
 			</div>
 
 			<div class="form-group row mx-0 d-none" id="mailCheck">
@@ -111,13 +111,13 @@
 					<input type="number" class="mailCheck form-control" id="emailCert" name="emailCert" placeholder="PIN" maxlength="6" required>
 				</div>
 			</div>
-			
+
 			<hr />
 			
 			<div class="form-group row mx-0">
 				<label for="userPw1" class="mt-2 col-2 border-right">Password <span class="required">*</span></label>
 				<div class="col-10">
-					<input type="password" class="userPw1 form-control" id="userPw1" name="uPw1" placeholder="PASSWORD" maxlength="16">
+					<input type="password" class="userPw1 form-control" id="userPw1" name="uPw1" placeholder="PASSWORD" maxlength="16" autocomplete="off">
 					<div class="userPw1-validation validation">
 					</div>
 				</div>
@@ -126,7 +126,7 @@
 			<div class="form-group row mx-0">
 				<label for="userPw2" class="mt-2 col-2"></label>
 				<div class="col-10">
-					<input type="password" class="userPw2 form-control" id="userPw2" name="uPw2" placeholder="CONFIRRM PASSWORD" maxlength="16" readonly="readonly">
+					<input type="password" class="userPw2 form-control" id="userPw2" name="uPw2" placeholder="CONFIRRM PASSWORD" maxlength="16" readonly="readonly" autocomplete="off">
 					<div class="userPw2-validation validation">
 					</div>
 				</div>
@@ -237,7 +237,6 @@ if ( socialEmail != '' && socialPw != '' ) {
 	var chkPw2 = true;
 }
 
-console.log(socialPw);
 
 // 메일 인증
 $('#mailCheck').click(function() {

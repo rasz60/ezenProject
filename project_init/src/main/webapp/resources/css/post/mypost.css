@@ -24,10 +24,11 @@
 }
 
 #feedPost #postBox .posts .post-top {
-	height: 320px;
+	max-height: 320px;
 	margin-bottom: 2%;
 	cursor: pointer;
 	line-height: 320px;
+	text-align: center;
 }
 
 #feedPost #postBox .posts .post-top img {

@@ -52,6 +52,7 @@
 	</filter-mapping>
 
 	<!-- auto http to https -->
+
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>SSL Forward</web-resource-name>

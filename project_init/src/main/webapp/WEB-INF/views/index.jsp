@@ -24,32 +24,33 @@
 <link rel="stylesheet" type="text/css" href="/init/css/includes/footer.css" />
 <title>WAYG</title>
 <style>
-.profile-img img {
+.profile-img {
 	border-radius: 50%;
-	max-width: 100%;
-	max-height: 100%;
+	overflow: hidden;
 }
-
+.profile-img img {
+	max-width: 100%;
+}
 .post-top {
+	max-height: 320px;
 	line-height: 320px;
+	overflow: hidden;
 }
 
 .post-top img {
 	max-width: 100%;
-	max-heihgt: 100%;
 }
-
 .profile-box{
 	height: 100%;
 }
-
 #post-profile {
+	text-align: center;
 	margin-left: 4px;
 	border-radius: 50%;
 	width: 35px;
 	height: 35px;
+	overflow: hidden;
 }
-
 #post-profile img {
 	max-width: 100%;
 	max-height: 100%;
@@ -58,6 +59,14 @@
 </style>
 
 <script>
+
+var u_width = $(window).width();
+
+if ( u_width < 1000 ) {
+	alert('작은 화면에서 접속시 정상적으로 구동되지 않습니다.\nPC에서 이용을 부탁드리겠습니다.');
+}
+
+
 <c:if test="${not empty user}">
 	var email = '<c:out value="${user.userEmail}" />';
 </c:if>
@@ -94,8 +103,8 @@
 					</s:authorize>
 					
 					<s:authorize access="isAuthenticated()">			
-						<div class="profile-img col-3">
-							<c:if test="${user.userProfileImg == null}">
+						<div class="profile-img px-0 col-3">
+							<c:if test="${user.userProfileImg eq null}">
 								<s:authorize access="hasRole('ROLE_USER')">
 								<img src="/init/resources/profileImg/nulluser.svg" alt="" />
 								</s:authorize>
@@ -231,7 +240,7 @@
 											<img src="/init/resources/profileImg/${post.userProfileImg }" alt="" />
 											</c:if>
 											
-											<c:if test="${post.userProfileImg == null }">
+											<c:if test="${post.userProfileImg eq null }">
 											<img src="/init/resources/profileImg/nulluser.svg" alt="" />
 											</c:if>
 										</div>
@@ -283,7 +292,7 @@
 											<img src="/init/resources/profileImg/${post.userProfileImg }" alt="" />
 											</c:if>
 											
-											<c:if test="${post.userProfileImg == null }">
+											<c:if test="${post.userProfileImg eq null }">
 											<img src="/init/resources/profileImg/nulluser.svg" alt="" />
 											</c:if>
 										</div>
@@ -385,10 +394,10 @@
 									<div class="profile-box col-2 px-0">
 										<div id="post-profile">
 											<c:if test="${likeList.userProfileImg != null }">
-											<img src="/init/resources/profileImg/${post.userProfileImg }" alt="" />
+											<img src="/init/resources/profileImg/${likeList.userProfileImg }" alt="" />
 											</c:if>
 											
-											<c:if test="${likeList.userProfileImg == null }">
+											<c:if test="${likeList.userProfileImg  eq  null }">
 											<img src="/init/resources/profileImg/nulluser.svg" alt="" />
 											</c:if>
 										</div>
@@ -437,10 +446,10 @@
 									<div class="profile-box col-2 px-0">
 										<div id="post-profile">
 											<c:if test="${likeList.userProfileImg != null }">
-											<img src="/init/resources/profileImg/${post.userProfileImg }" alt="" />
+											<img src="/init/resources/profileImg/${likeList.userProfileImg }" alt="" />
 											</c:if>
 											
-											<c:if test="${likeList.userProfileImg == null }">
+											<c:if test="${likeList.userProfileImg  eq  null }">
 											<img src="/init/resources/profileImg/nulluser.svg" alt="" />
 											</c:if>
 										</div>
@@ -539,10 +548,10 @@
 									<div class="profile-box col-2 px-0">
 										<div id="post-profile">
 											<c:if test="${viewList.userProfileImg != null }">
-											<img src="/init/resources/profileImg/${post.userProfileImg }" alt="" />
+											<img src="/init/resources/profileImg/${viewList.userProfileImg }" alt="" />
 											</c:if>
 											
-											<c:if test="${viewList.userProfileImg == null }">
+											<c:if test="${viewList.userProfileImg eq null }">
 											<img src="/init/resources/profileImg/nulluser.svg" alt="" />
 											</c:if>
 										</div>
@@ -591,10 +600,10 @@
 									<div class="profile-box col-2 px-0">
 										<div id="post-profile">
 											<c:if test="${viewList.userProfileImg != null }">
-											<img src="/init/resources/profileImg/${post.userProfileImg }" alt="" />
+											<img src="/init/resources/profileImg/${viewList.userProfileImg }" alt="" />
 											</c:if>
 											
-											<c:if test="${viewList.userProfileImg == null }">
+											<c:if test="${viewList.userProfileImg eq null }">
 											<img src="/init/resources/profileImg/nulluser.svg" alt="" />
 											</c:if>
 										</div>

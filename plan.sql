@@ -6,10 +6,14 @@ CREATE TABLE plan_mst(
     startDate VARCHAR2(100) NOT NULL,
     endDate VARCHAR2(100) NOT NULL,
     dateCount VARCHAR2(100) NOT NULL,
-    eventColor VARCHAR2(100) NOT NULL
+    eventColor VARCHAR2(100) NOT NULL,
+    
+    CONSTRAINT valid_dateCount_planmst CHECK (dateCount > 0 AND dateCount <= 10),
+    CONSTRAINT fk_userid_planmst FOREIGN KEY(userId) REFERENCES userinfo(userEmail) ON DELETE CASCADE
 );
 /* planMst sequence */
 CREATE SEQUENCE plan_mst_seq NOCACHE;
+
 
 /* planDt table */
 CREATE TABLE plan_dt(
@@ -28,18 +32,23 @@ CREATE TABLE plan_dt(
     address VARCHAR2(50),
     category VARCHAR2(100), 
     transportation VARCHAR2(100),
-    details VARCHAR2(1000)
+    details VARCHAR2(1000),
+    
+    CONSTRAINT fk_planNum_plandt FOREIGN KEY(planNum) REFERENCES plan_mst(planNum) ON DELETE CASCADE,
+    CONSTRAINT fk_userid_plandt FOREIGN KEY(userId) REFERENCES userinfo(userEmail) ON DELETE CASCADE
 );
 /* planDt sequence */
 CREATE SEQUENCE plan_dt_seq NOCACHE;
 
 /* planDt sequence trigger : insert all 구문시에 동시에 nextVal이 여러 행에 적용되는 오류 수정  */
+/*
 CREATE OR REPLACE TRIGGER tr_plan_dt
 BEFORE INSERT ON plan_dt
 FOR EACH ROW
 BEGIN
     SELECT plan_dt_seq.NEXTVAL INTO :new.planDtNum FROM dual;
 END;
+*/
 
 commit;
 

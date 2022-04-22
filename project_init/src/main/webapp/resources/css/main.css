@@ -190,6 +190,22 @@ img {
 	margin-top: -2px;
 }
 
+.content .count {
+	display: inline-block;
+	position: absolute;
+	top: -58px; right: 15px;
+	min-width: 10%;
+	width: auto;
+	border-radius: 15px 15px 15px 15px;
+	background-color: red;
+	text-align: center;
+	color: white;
+	font-size: 13px;
+	font-weight: 500;
+	font-style: italic;
+	
+}
+
 .info .img {
 	margin: 5px 5px 0px 5px;
 	position: absolute;

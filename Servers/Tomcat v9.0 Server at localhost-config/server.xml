@@ -78,7 +78,9 @@
 
     <Connector SSLEnabled="true" maxThreads="150" port="8443" protocol="org.apache.coyote.http11.Http11NioProtocol">
         <SSLHostConfig>
-            <Certificate certificateKeystoreFile="d:/EzenClass/05_Spring-workspace/apache-tomcat-9.0.56/conf/step1_keystore.jks" certificateKeystorePassword="123456" type="RSA"/>
+            <Certificate certificateKeystoreFile="F:/init/init_project/projectTest/apache-tomcat-9.0.56/conf/step1_keystore.jks" 
+            			 certificateKeystorePassword="123456" 
+            			 type="RSA"/>
         </SSLHostConfig>
     </Connector>
 

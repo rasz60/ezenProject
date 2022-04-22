@@ -7,8 +7,9 @@ $(document).ready(function() {
 	$(".post").click(function(){
 		postNo = $(this).attr("data-value");
 		
-		$('#modalBtn').trigger('click');
+		addview(postNo);
 		
+		$('#modalBtn').trigger('click');
 		$.ajax({
 	           url:"getlist.do",
 	           type:"post",
@@ -28,7 +29,7 @@ $(document).ready(function() {
 	 			// data parsing
 				var userEmail = data.email;
 	 			var userNick=data.userNick;
-	            var userProfileImg = data.userProfileImg;
+	            var userProfileImg2 = data.userProfileImg;
 	            var likes = data.likes;
 	            var content = data.content;
 	            var comment_total = data.comments;
@@ -38,8 +39,9 @@ $(document).ready(function() {
 	            var postNo = data.postNo;
 	            var heartCheck =data.heartCheck;
 	            var hashtag;
-
-				if ( userEmail == email ) {
+				
+				
+				if ( userEmail == myInfo ) {
 					$('.modifyBtn').css('display', 'inline-block');
 					$('.modifyBtn').attr('href', $('.modifyBtn').attr('href')+postNo)
 					$('.deleteBtn').css('display', 'inline-block');
@@ -48,6 +50,14 @@ $(document).ready(function() {
 					$('.modifyBtn').css('display', 'none');
 					$('.deleteBtn').css('display', 'none');
 				}
+
+				if ( userProfileImg2 === '' || userProfileImg2 === null ) {
+					$('.profile-img-s img').attr('src', '/init/resources/profileImg/nulluser.svg');
+				} else {
+					$('.profile-img-s img').attr('src', '/init/resources/profileImg/'+ userProfileImg2);
+
+				} 
+				
 
 
 	            if (data.hashtag != null) {
@@ -64,7 +74,7 @@ $(document).ready(function() {
 								
 	            if ( postDt != null ) {
 	               	for ( var i = 0; i < postDt.length; i++ ) {
-						console.log(postDt[i].location);
+						//console.log(postDt[i].location);
 		
 	           			var item = '<div class="mr-1 px-1 location-item border bg-light rounded">'
 								 + '<i class="fa-solid fa-location-dot text-primary"></i>&nbsp;'
@@ -82,7 +92,7 @@ $(document).ready(function() {
 	               	}
 	            }
 	               
-	               // heart 확인해서 좋아요 누른 게시물은 active 부여
+	            // heart 확인해서 좋아요 누른 게시물은 active 부여
 	           	if( heartCheck == 1 ) {
 	           		$('i.modal-like').addClass('active');
 	           	}
@@ -112,7 +122,7 @@ $(document).ready(function() {
 	           	
 	 		},
 	 		error: function(data) {
-	 			console.log("ajax1 처리 실패");
+	 			//console.log("ajax1 처리 실패");
 	 		}
 		});
 		getComments(postNo);
@@ -130,7 +140,7 @@ function modalLike(element, postNo) {
     	url :'addLike.do',
      	data : {
         	postNo : postNo,
-            email : email
+            email : myInfo
         },
      	type : 'post',
      	beforeSend: function(xhr){
@@ -146,17 +156,39 @@ function modalLike(element, postNo) {
            		element.removeClass('active');
            		element.siblings('#likeCount').text(Number(element.siblings('#likeCount').text())-1);
    		    }
-        	console.log('하트날리기 성공');   
+        	//console.log('하트날리기 성공');   
     	},
     	
      	error : function () {
-        	console.log('하트날리기 실패');
+        	//console.log('하트날리기 실패');
     	}
 	});
 };
 
+function addview(postNo){
+	//console.log(postNo);
+	$.ajax({
+		url :'/init/post/addView.do',
+		data : {
+			postNo : postNo,
+			email : myInfo},
+		type : 'post',
+		beforeSend: function(xhr){
+	 	   	var token = $("meta[name='_csrf']").attr('content');
+	 		var header = $("meta[name='_csrf_header']").attr('content');
+ 		    xhr.setRequestHeader(header, token);
+ 		},
+		success : function () {
+		},
+		error : function () {
+			//console.log('failed view up');
+		}
+	})
+};
+
+
 $(document).on('click', '.addcomment', function () {
-	console.log('진입');
+	//console.log('진입');
 	
 	postNo = $(this).attr('data-num');
 	let content = $('input.comment').val();
@@ -172,24 +204,24 @@ $(document).on('click', '.addcomment', function () {
 		data : {postNo : postNo,
 				content : content,
 				grpl : grpl,
-				email : email},
+				email : myInfo},
 		beforeSend: function(xhr){
 	 	  	var token = $("meta[name='_csrf']").attr('content');
 	 		var header = $("meta[name='_csrf_header']").attr('content');
  		    xhr.setRequestHeader(header, token);
  		},
  		success : function () {
- 			console.log('success');
+ 			//console.log('success');
  			getComments(postNo);
 			
  			$('.comment').val('');
  			
- 			console.log($('.comment-block').length);
+ 			//console.log($('.comment-block').length);
  			
  			$('div.comment_total>span').text(Number($('.comment-block').length)+1);
 		},
 		error : function () {
-			console.log('ERROR');
+			//console.log('ERROR');
 		}
 		
 	});
@@ -209,17 +241,28 @@ function getComments(postNo) {
         success:function(data){
 
 	       	for(var i=0; i<data.length; i++){
+		
+				var upimg = data[i].userProfileImg;
+
 				comments += '<div class="comment-block row mx-0 my-1 d-flex">';
 				comments +=	'<div class="profile-img-xxs col-1 px-0">';
-				comments +=	'<div class="img-xxs border"></div>';
+				comments +=	'<div class="img-xxs">';
+				
+				if ( upimg === '' || upimg === null ) {
+					comments += '<img src="/init/resources/profileImg/nulluser.svg"/>';
+				} else {
+					comments += '<img src="/init/resources/profileImg/' + upimg + '" />';
+				} 
+				
+				comments +=	'</div>';
 				comments +=	'</div>';
 				comments +=	'<span class="col-3 pl-1 nickname" style="font-size: 14px; font-weight: 600;">' + data[i].userNick + '</span>';
 	           	comments += '<span class="col-6 px-0 comment-text" style="font-size: 13px;">'+data[i].content+'</span>';
 					
-				if(email!=="" && email!==null && email!=="null"){
+				if(myInfo !=="" &&  myInfo !==null && myInfo !=="null"){
 					comments += '<span class="replyClick col-1 px-0" data-count="0" style="font-size: 5px; cursor : pointer;">답글</span>';
 				}
-				if(email===data[i].email){
+				if(myInfo === data[i].email){
 					comments += '<i class="fa-solid fa-x deleteRe" style="font-size:5px; color:red; cursor : pointer;" data-no="'+data[i].commentNo+'"></i><br/>';
 				}
 
@@ -253,7 +296,7 @@ function getComments(postNo) {
 				let grp = $(this).siblings('.recomment').attr('data-grp');
 				let grpl = $(this).siblings('.recomment').attr('data-grpl');
 				let grps = $(this).siblings('.recomment').attr('data-grps');
-				console.log(email);
+				//console.log(email);
 
 				$.ajax({
 					url : 'addReplyComments.do',
@@ -263,18 +306,18 @@ function getComments(postNo) {
 							grp : grp,
 							grpl : grpl,
 							grps : grps,
-							email : email},
+							email : myInfo},
 					beforeSend: function(xhr){
 				 	  	var token = $("meta[name='_csrf']").attr('content');
 				 		var header = $("meta[name='_csrf_header']").attr('content');
 			 		    xhr.setRequestHeader(header, token);
 			 		},
 			 		success : function () {
-			 			console.log('success');
+			 			//console.log('success');
 			 			getComments(postNo);
 					},
 					error : function () {
-						console.log('ERROR');
+						//console.log('ERROR');
 					}
 				});
 			});
@@ -294,24 +337,24 @@ function getComments(postNo) {
 			 		    xhr.setRequestHeader(header, token);
 			 		},
 			 		success : function () {
-			 			console.log('success');
+			 			//console.log('success');
 			 			getComments(postNo);
 					},
 					error : function () {
-						console.log('ERROR');
+						//console.log('ERROR');
 					}
 					
 				});
 			});
      	},
      	error:function(){
-        	console.log("ajax 처리 실패");
+        	//console.log("ajax 처리 실패");
      	}
 	});
 }
 
 $(document).on('hidden.bs.modal', '#modal-reg', function() {
-	console.log('진입');
+	//console.log('진입');
     $(".nickname b").html('');
     $(".content").html('');
     $('.hashtag').children('span').remove();
@@ -331,7 +374,7 @@ $(document).on('hidden.bs.modal', '#modal-reg', function() {
 });
 
 $('#moreBtn').click(function() {
-	console.log('진입');
+	//console.log('진입');
 	var curridx = Number($(this).attr('data-currIndex'))+1;
 	var maxidx = $(this).attr('data-maxindex');
 	var total = $('.posts').length;

@@ -304,7 +304,64 @@ $(document).ready(function(){
 	//회원탈퇴 버튼 클릭시 모달창 띄움
 	$("#resigBtn").click(function(){
 		$("#resigModalBtn").trigger("click");
+		$('#ct1').trigger('click');
 	});
+	
+	$('#ct1').click(function() {
+		$('form#chkPwForResig').removeClass('d-none');
+		$('div.mailCert').addClass('d-none');
+	})
+	
+	
+	$('#ct2').click(function() {
+		$('div.mailCert').removeClass('d-none');
+		$('form#chkPwForResig').addClass('d-none');
+	})
+	
+	$('button.sendPin').click(function() {
+		$.ajax({
+			url : '/init/mail/mailCert',
+			type: 'get',
+			data: {email : myEmail},
+			success: function(data) {
+				$('#mailDone').removeClass('d-none');
+				$('#pinInput').attr('readonly', false);
+				$('button.sendPin').addClass('d-none');
+				$('button.pinCheck').removeClass('d-none');
+				
+				
+				$('button.pinCheck').click(function() {
+					
+					var pinInput = $('input#pinInput').val();
+					
+					if ( pinInput != null || pinInput.val() != '' ) {
+						
+						if ( pinInput == data ) {
+							$(".modal-body").html("<h5>확인 버튼을 누르시면 모든 정보가 사라지며 다시 복구 할 수 없습니다.</h5>")
+							$("#agreeResig").css("display","inline"); //회원탈퇴 최종 확인버튼 보이게
+							$('#resigModal').on('hidden.bs.modal',function(e) { //모달 닫을때 이벤트
+								location.reload();
+							});	
+						} else {
+							alert('PIN 번호를 다시 확인해주세요.');
+							$('input#pinInput').val('');
+							$('input#pinInput').focus();
+							return false;
+						}
+						
+					} else {
+						alert('PIN 번호를 입력해주세요.');
+						return false;
+					}
+				})
+			},
+			error : function(){
+				alert('서버 문제로 메일발송에 실패했습니다. 다시 한 번 시도해주세요.');				
+			}
+		})
+	});
+	
+
 	
 	//회원탈퇴 모달창안에 비밀번호 확인 버튼 누를시
 	$("#chkPwForResig").submit(function(e){

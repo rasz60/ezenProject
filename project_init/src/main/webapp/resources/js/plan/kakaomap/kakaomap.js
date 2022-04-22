@@ -238,39 +238,6 @@ for (i=1; i<=pagination.last; i++) {
 paginationEl.appendChild(fragment);
 }
 
-//검색결과 목록 또는 마커에 마우스 올렸을 때 호출되는 함수입니다
-//인포윈도우에 장소명을 표시합니다
-function displayInfowindow(marker, title, address, category) {
-
-	var content = '<div class="wrap">' + 
-    	       '<div class="info">' + 
-	           '<div class="title bg-info">' + 
-	     	   '<img src="/init/images/marker.png" width="25px" height="25px" background-color="white">&nbsp;&nbsp;&nbsp;' + 
-	     		placeName + 
-	            '</div>' + 
-	            '<div class="body">' + 
-	            '<div class="img">' +
-	            '<img src="/init/images/infowindow-logo.png">' +
-	            '</div>' + 
-	            '<div class="content">' + 
-	            '<div class="address">' + '주소 : ' + address + '</div>' +
-	            '<div class="theme">' + '목적 : ' + theme + '</div>' +
-	            '<div class="category">' + '장소 : ' + category + '</div>' +
-	            '<div class="transportation">' + '이동수단 : ' + transportation + '</div>' +
-	            '<div class="post">' + 'POST : ' + 
-	            '<a href="feed/feedPost" target="_blank" class="link">post</a>' + 
-	            '</div>' + 
-	            '</div>' + 
-	            '</div>' + 
-	         	'</div>' +    
-	       		'</div>'; 
-	$('div.wrap').parent().parent().css('border', 'none');
-	$('div.wrap').parent().parent().css('background-color', 'transparent');
-	
-	infowindow.setContent(content);
-	infowindow.open(map, marker);
-}
-
 //마커와 검색결과 목록 클릭 시 input에 data 입력
 function inputdata(marker, target1, value, title, address, category, category_code) {
    // 현재 상세 일정에 추가할 것이므로 일정 개수(value) + 1한 값을 변수로 선언
@@ -412,24 +379,30 @@ function inputdata(marker, target1, value, title, address, category, category_co
    // 현재 작성중인 planDay에 맞는 배열에 marker를 저장
    addMarkerArray(planDay, marker);
    
-   //사용자가 임의로 만든 마커의 인포윈도우 생성 이벤트 등록
-   kakao.maps.event.addListener(marker, 'mouseover', function() { //마커에 마우스 올렸을 때
+    //사용자가 임의로 만든 마커의 인포윈도우 생성 이벤트 등록
+    kakao.maps.event.addListener(marker, 'mouseover', function() { //마커에 마우스 올렸을 때
         displayInfowindow(marker, title, address, category); // displayInfowindow()에서 처리
     });
 
-        kakao.maps.event.addListener(marker, 'mouseout', function() { // 마커에 마우스 치웠을 때 인포창 닫기
+    kakao.maps.event.addListener(marker, 'mouseout', function() { // 마커에 마우스 치웠을 때 인포창 닫기
         infowindow.close();
-    });    
+    });
 
 }
 
 //사용자가 임의로 만든 마커의 인포윈도우
-function displayInfowindow(marker, placeName, title, address, category) { //인포윈도우 생성
+function displayInfowindow(marker, title, address, category) { //인포윈도우 생성
+	console.log('?');
+	
+	if ( category == null || category == '' ) {
+		category = '준비중';
+	}
+	
 	var content = '<div class="wrap">' + 
     	       '<div class="info">' + 
 	           '<div class="title bg-info">' + 
 	     	   '<img src="/init/images/marker.png" width="25px" height="25px" background-color="white">&nbsp;&nbsp;&nbsp;' + 
-	     		placeName + 
+	     		title + 
 	            '</div>' + 
 	            '<div class="body">' + 
 	            '<div class="img">' +
@@ -438,18 +411,17 @@ function displayInfowindow(marker, placeName, title, address, category) { //인�
 	            '<div class="content">' + 
 	            '<div class="address">' + '주소 : ' + address + '</div>' +
 	            '<div class="category">' + '장소 : ' + category + '</div>' +
-	            '<a href="feed/feedPost" target="_blank" class="link">post</a>' + 
 	            '</div>' + 
 	            '</div>' + 
 	            '</div>' + 
 	         	'</div>' +    
 	       		'</div>'; 
 
-	$('div.wrap').parent().parent().css('border', 'none');
-	$('div.wrap').parent().parent().css('background-color', 'transparent');
-	
 	infowindow.setContent(content);
 	infowindow.open(map, marker);
+	
+	$('div.wrap').parent().parent().css('border', 'none');
+	$('div.wrap').parent().parent().css('background-color', 'transparent');
 }
 
 // 검색결과 목록의 자식 Element를 제거하는 함수입니다
@@ -500,13 +472,24 @@ function removeMarkerArray(planDay, index) {
 
 // 맵에 각 일정에 맞는 마커만 표시하는 메서드
 function setDayMap(planday) {
-   for ( var i = 0; i < markers2.length; i++ ) {
-      if( markers2[i].day == planday ) {
-         markers2[i].mapMarker.setMap(map);
-      } else {
-         markers2[i].mapMarker.setMap(null);
-      }
-   }
+	
+	var moveLatlon = new kakao.maps.LatLng(37.566826, 126.9786567);
+	
+    for ( var i = 0; i < markers2.length; i++ ) {
+    	if( markers2[i].day == planday ) {
+			markers2[i].mapMarker.setMap(map);
+      		
+		} else {
+        	markers2[i].mapMarker.setMap(null);
+      	}
+    }
+
+	if ( 1 == 1 && markers2[0].mapMarker.getPosition().getLat() != null) {
+		moveLatlon = new kakao.maps.LatLng(markers2[0].mapMarker.getPosition().getLat(),
+										   markers2[0].mapMarker.getPosition().getLng());
+	}
+	
+	map.panTo(moveLatlon);
 }
 
 // 같은 날짜에 동일한 장소로 일정 생성 확인

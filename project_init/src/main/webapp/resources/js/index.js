@@ -12,7 +12,7 @@ mainFilter.onchange = function(){
 		transportation : ['도보', '자가용', '고속/시외/시내버스', '지하철', '자전거', '택시', '전세/관광버스', '차량대여/렌트', '오토바이', '전동킥보드', '비행기', '선박', '기타'],
 		theme : ['방문', '데이트', '가족여행', '친구들과', '맛집탐방', '비즈니스', '소개팅', '미용', '운동', '문화생활', '여가생활']
 	}
-	
+		
 	//메인옵션 선택에 따라 서브옵션 select
 	switch(mainOption){
 		case '모두보기' : 
@@ -40,13 +40,17 @@ mainFilter.onchange = function(){
 		subFilter.append(option); // 서브필터에 option태그 넣기
 	}
 }
+
 var map = new kakao.maps.Map(document.getElementById('map'), { // 지도를 표시할 div
     center : new kakao.maps.LatLng(36.1372611294738, 128.09319902660602), // 지도의 중심좌표 
     level : 13 // 지도의 확대 레벨 
 });
+
 map.setMaxLevel(14); //지도 확대 최대 레벨
+
 //검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성
 var infowindow = new kakao.maps.InfoWindow({zIndex:1});
+
 // 마커 클러스터러를 생성 
 var clusterer = new kakao.maps.MarkerClusterer({
     map: map, // 마커들을 클러스터로 관리하고 표시할 지도 객체 
@@ -167,7 +171,7 @@ $('#filterbtn').click(function(e){
 		break;
 	}
 	clusterer.clear(); //이전에 생성된 마커들 제거
-	console.log(value1, value2, value3, value4)
+
 	$.ajax({
 		url : 'filter',
 		type: 'get',
@@ -178,68 +182,131 @@ $('#filterbtn').click(function(e){
 		        xhr.setRequestHeader(header, token);
 		},
 		success: function(data) {
-			console.log(data);			
-			var markers =[]; // markers를 배열로 선언
+			console.log(data);
+
+			var plans = []; // markers를 배열로 선언
+			var markers = [];
 			for (var i = 0; i < data.length; i++ ) {
 				var marker = new kakao.maps.Marker({  //반복문에서 생성하는 marker 객체를 markers에 추가
 		            map: map, // 마커를 표시할 지도
 		            position: new kakao.maps.LatLng(data[i].latitude, data[i].longitude) // 마커를 표시할 위치
 		        })
+				
 				markers.push(marker);
-				
-				var placeName = [];
-				placeName.push(data[i].placeName);
-				var address=[];
-				address.push(data[i].address);
-				var category = []; //카테고리
-				
+	
 				switch(data[i].category){ // DB에는 카테고리의 code값이 들어가므로 code를 카테고리 명으로 변경
-					case "MT1" : category.push("대형마트");
-					break;
-					case "CS2" : category.push("편의점");
-					break;
-					case "PS3" : category.push("어린이집, 유치원");
-					break;
-					case "SC4" : category.push("학교");
-					break;
-					case "AC5" : category.push("학원");
-					break;
-					case "PK6" : category.push("주차장");
-					break;
-					case "OL7" : category.push("주유소, 충전소");
-					break;
-					case "SW8" : category.push("지하철역");
-					break;
-					case "BK9" : category.push("은행");
-					break;
-					case "CT1" : category.push("문화시설");
-					break;
-					case "AG2" : category.push("중개업소");
-					break;
-					case "PO3" : category.push("공공기관");
-					break;
-					case "AT4" : category.push("관광명소");
-					break;
-					case "PO3" : category.push("숙박");
-					break;
-					case "FD6" : category.push("음식점");
-					break;
-					case "CE7" : category.push("카페");
-					break;
-					case "HP8" : category.push("병원");
-					break;
-					case "PM9" : category.push("약국");
-					break;
+					case "MT1" : 
+						data[i].category = "대형마트";
+						break;
+					
+					case "CS2" : 
+						data[i].category = "편의점";
+						break;
+					
+					case "PS3" : 
+						data[i].category = "어린이집, 유치원";
+						break;
+					
+					case "SC4" : 
+						data[i].category = "학교";
+						break;
+					
+					case "AC5" : 
+						data[i].category = "학원";
+						break;
+					
+					case "PK6" : 
+						data[i].category = "주차장";
+						break;
+					
+					case "OL7" : 
+						data[i].category = "주유소, 충전소";
+						break;
+					
+					case "SW8" : 
+						data[i].category = "지하철역";
+						break;
+					
+					case "BK9" : 
+						data[i].category = "은행";
+						break;
+					
+					case "CT1" : 
+						data[i].category = "문화시설";
+						break;
+					
+					case "AG2" : 
+						data[i].category = "중개업소";
+						break;
+					
+					case "PO3" : 
+						data[i].category = "공공기관";
+						break;
+					
+					case "AT4" : 
+						data[i].category = "관광명소";
+						break;
+					
+					case "PO3" : 
+						data[i].category = "숙박";
+						break;
+					
+					case "FD6" : 
+						data[i].category = "음식점";
+						break;
+					
+					case "CE7" : 
+						data[i].category = "카페";
+						break;
+					
+					case "HP8" : 
+						data[i].category = "병원";
+						break;
+					
+					case "PM9" : 
+						data[i].category = "약국";
+						break;
 				}
-				(function(marker, placeName, address, category) { //이벤트 등록
+				var planObject;
+				var placeName = data[i].placeName;
+				var planAddress = data[i].address;
+				var planCategory = data[i].category;
+				var planCount = 0;
+				
+
+				for( var i = 0; i < plans.length; i++ ) {
+					var newMarker = marker.getPosition();
+					var oldMarker = plans[i].marker.getPosition();
+					
+					if ( newMarker.La === oldMarker.La && newMarker.Ma === oldMarker.Ma ) {
+						plans[i].count = Number(plans[i].count)+1;
+						planCount = plans[i].count;
+
+					} else {
+						planCount = 1;
+					}
+				}
+				
+				planObject = {
+					marker : marker,
+					placeName : placeName,
+					address : planAddress,
+					category : planCategory,
+					count : planCount
+				}
+				plans.push(planObject);
+				
+				console.log(plans.length);
+				
+				
+				(function(marker, placeName, planAddress, planCategory, planCount) { //이벤트 등록
 					kakao.maps.event.addListener(marker, 'mouseover', function() { //마커에 마우스 올렸을 때
-			            displayInfowindow(marker, placeName, address, category); // displayInfowindow()에서 처리
+			            displayInfowindow(marker, placeName, planAddress, planCategory, planCount); // displayInfowindow()에서 처리
 			        });
-			
 				    kakao.maps.event.addListener(marker, 'mouseout', function() { // 마커에 마우스 치웠을 때 인포창 닫기
 			            infowindow.close();
-			        }); 	
-				})(marker, placeName, address, category);
+			        });	
+				})(marker, placeName, planAddress, planCategory, planCount);
 				
 			 }
 			clusterer.addMarkers(markers); // 클러스터러에 마커들을 추가		
@@ -249,7 +316,16 @@ $('#filterbtn').click(function(e){
 		}
 	});	
 });
-function displayInfowindow(marker, placeName, address, category) { //인포윈도우 생성
+function displayInfowindow(marker, placeName, address, category, count) { //인포윈도우 생성
+
+	if( Number(count) > 9999 ) {
+		count = '9999+';
+	}
+	
+	if ( category == null ) {
+		category = '준비중';
+	}
+	
 	var content = '<div class="wrap">' + 
 		       '<div class="info">' + 
 	           '<div class="title bg-info">' + 
@@ -264,17 +340,19 @@ function displayInfowindow(marker, placeName, address, category) { //인포윈�
 				'<div class="placeName">' + '이름 : ' + placeName + '</div>' +
 	            '<div class="address">' + '주소 : ' + address + '</div>' +
 	            '<div class="category">' + '장소 : ' + category + '</div>' +
+				'<span class="count">' + count + '</span>' +
 	            '</div>' + 
 	            '</div>' + 
 	            '</div>' + 
 	         	'</div>' +    
-	       		'</div>'; 
+	       		'</div>';
 	
-	$('div.wrap').parent().parent().css('border', 'none');
-	$('div.wrap').parent().parent().css('background-color', 'transparent');
-     
 	 infowindow.setContent(content);
 	 infowindow.open(map, marker);
+
+	$('div.wrap').parent().parent().css('border', 'none');
+	$('div.wrap').parent().parent().css('background-color', 'transparent');
+
 }
 
 
@@ -296,8 +374,8 @@ $(document).ready(function() {
 
 	$('.post').click(function() {
 		var postNo = $(this).attr("data-value");
-		console.log(postNo);
 		
+		addview(postNo);
 		$('#modalBtn').trigger('click');
 		$.ajax({
 	           url:"/init/post/getlist.do",
@@ -334,9 +412,7 @@ $(document).ready(function() {
 				} else {
 					$('.profile-img-s img').attr("src", "/init/resources/profileImg/nulluser.svg");
 				}
-				
-				
-				
+
 				if ( userEmail == email ) {
 					$('.modifyBtn').css('display', 'inline-block');
 					$('.modifyBtn').attr('href', $('.modifyBtn').attr('href')+postNo)
@@ -362,7 +438,7 @@ $(document).ready(function() {
 								
 	            if ( postDt != null ) {
 	               	for ( var i = 0; i < postDt.length; i++ ) {
-						console.log(postDt[i].location);
+						//console.log(postDt[i].location);
 		
 	           			var item = '<div class="mr-1 px-1 location-item border bg-light rounded">'
 								 + '<i class="fa-solid fa-location-dot text-primary"></i>&nbsp;'
@@ -410,17 +486,34 @@ $(document).ready(function() {
 	           	
 	 		},
 	 		error: function(data) {
-	 			console.log("ajax1 처리 실패");
+	 			//console.log("ajax1 처리 실패");
 	 		}
 		});
 		getComments(postNo, email);
 	});
-	
-	
-
-	
-	
 });
+
+
+function addview(postNo){
+	//console.log(postNo);
+	$.ajax({
+		url :'/init/post/addView.do',
+		data : {
+			postNo : postNo,
+			email : email},
+		type : 'post',
+		beforeSend: function(xhr){
+	 	   	var token = $("meta[name='_csrf']").attr('content');
+	 		var header = $("meta[name='_csrf_header']").attr('content');
+ 		    xhr.setRequestHeader(header, token);
+ 		},
+		success : function () {
+		},
+		error : function () {
+			console.log('failed view up');
+		}
+	})
+};
 
 
 function getComments(postNo, email) {
@@ -487,7 +580,7 @@ function getComments(postNo, email) {
 				let grp = $(this).siblings('.recomment').attr('data-grp');
 				let grpl = $(this).siblings('.recomment').attr('data-grpl');
 				let grps = $(this).siblings('.recomment').attr('data-grps');
-				console.log(email);
+				//console.log(email);
 
 				$.ajax({
 					url : '/init/post/addReplyComments.do',
@@ -504,11 +597,11 @@ function getComments(postNo, email) {
 			 		    xhr.setRequestHeader(header, token);
 			 		},
 			 		success : function () {
-			 			console.log('success');
+			 			//console.log('success');
 			 			getComments(postNo);
 					},
 					error : function () {
-						console.log('ERROR');
+						//console.log('ERROR');
 					}
 				});
 			});
@@ -528,18 +621,18 @@ function getComments(postNo, email) {
 			 		    xhr.setRequestHeader(header, token);
 			 		},
 			 		success : function () {
-			 			console.log('success');
+			 			//console.log('success');
 			 			getComments(postNo);
 					},
 					error : function () {
-						console.log('ERROR');
+						//console.log('ERROR');
 					}
 					
 				});
 			});
      	},
      	error:function(){
-        	console.log("ajax 처리 실패");
+        	//console.log("ajax 처리 실패");
      	}
 	});
 	
@@ -577,17 +670,16 @@ function modalLike(element, postNo) {
            		element.removeClass('active');
            		element.siblings('#likeCount').text(Number(element.siblings('#likeCount').text())-1);
    		    }
-        	console.log('하트날리기 성공');   
+        	//console.log('하트날리기 성공');   
     	},
     	
      	error : function () {
-        	console.log('하트날리기 실패');
+        	//console.log('하트날리기 실패');
     	}
 	});
 };
 
 $(document).on('click', '.addcomment', function () {
-	console.log('진입');
 	
 	postNo = $(this).attr('data-num');
 	let content = $('input.comment').val();
@@ -610,17 +702,17 @@ $(document).on('click', '.addcomment', function () {
  		    xhr.setRequestHeader(header, token);
  		},
  		success : function () {
- 			console.log('success');
+ 			//console.log('success');
  			getComments(postNo);
 			
  			$('.comment').val('');
  			
- 			console.log($('.comment-block').length);
+ 			//console.log($('.comment-block').length);
  			
  			$('div.comment_total>span').text(Number($('.comment-block').length)+1);
 		},
 		error : function () {
-			console.log('ERROR');
+			//console.log('ERROR');
 		}
 		
 	});
@@ -629,7 +721,7 @@ $(document).on('click', '.addcomment', function () {
 
 
 $(document).on('hidden.bs.modal', '#modal-reg', function() {
-	console.log('진입');
+	//console.log('진입');
     $(".nickname b").html('');
     $(".content").html('');
     $('.hashtag').children('span').remove();

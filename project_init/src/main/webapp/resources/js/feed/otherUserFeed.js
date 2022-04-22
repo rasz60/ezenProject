@@ -234,10 +234,6 @@ var clusterer = new kakao.maps.MarkerClusterer({
 					}	
 				}
 				
-				
-				
-				
-												
 				(function(marker, feedMapObj) { //이벤트 등록
 					kakao.maps.event.addListener(marker, 'mouseover', function() { //마커에 마우스 올렸을 때
 			            displayInfowindow(marker, feedMapObj); // displayInfowindow()에서 처리
@@ -274,20 +270,14 @@ function displayInfowindow(marker, feedMapObj) { //인포윈도우 생성
 	content += '<img src="../images/infowindow-logo.png">';
 	content += '</div>';
 	content += '<div class="content" style="height: 150px">';
+	content += '<div class="info-address">' + '주소 : ' + feedMapObj.address + '</div>';
+	content += '<div class="info-theme">' + '목적 : ' + feedMapObj.theme + '</div>';
 	
-	if ( feedMapObj.address != null ) {
-		content += '<div class="info-address">' + '주소 : ' + feedMapObj.address + '</div>';
+	if ( feedMapObj.category == null ) {
+		feedMapObj.category = '준비 중';
 	}
 	
-	console.log(feedMapObj.theme);
-	
-	if ( feedMapObj.theme != null ) {
-		content += '<div class="info-theme">' + '목적 : ' + feedMapObj.theme + '</div>';
-	}
-	
-	if ( feedMapObj.category != null ) {
-		content += '<div class="info-category">' + '장소 : ' + feedMapObj.category + '</div>';
-	}
+	content += '<div class="info-category">' + '장소 : ' + feedMapObj.category + '</div>';
 	
 	if ( feedMapObj.transportation != null ) {
 		content += '<div class="info-transportation">' + '이동수단 : ' + feedMapObj.transportation + '</div>';
@@ -296,18 +286,18 @@ function displayInfowindow(marker, feedMapObj) { //인포윈도우 생성
 	if ( feedMapObj.post != '' ) {
 		content += '<button type="button" class="btn btn-xl btn-primary post_link info-post" style="width: 90%;" data-num="'+ feedMapObj.post + '">';
 		content += '<i class="fa-brands fa-instagram"></i>';
-		content += '</button>';		
+		content += '</button>';
 	}
 	content += '</div>';
 	content += '</div>';
 	content += '</div>';
 	content += '</div>';
 
-	$('div.wrap').parent().parent().css('border', 'none');
-	$('div.wrap').parent().parent().css('background-color', 'transparent');
-	
 	infowindow.setContent(content);
 	infowindow.open(map, marker);
+	
+	$('div.wrap').parent().parent().css('border', 'none');
+	$('div.wrap').parent().parent().css('background-color', 'transparent');
  }
 //마커 클러스터러에 클릭이벤트를 등록합니다
 //마커 클러스터러를 생성할 때 disableClickZoom을 true로 설정하지 않은 경우
@@ -340,7 +330,7 @@ $(document).on('click', 'button.post_link', function(e) {
 	 			// data parsing
 				var userEmail = data.email;
 	 			var userNick=data.userNick;
-	            var userProfileImg = data.userProfileImg;
+	            var userProfileImg2 = data.userProfileImg;
 	            var likes = data.likes;
 	            var content = data.content;
 	            var comment_total = data.comments;
@@ -351,7 +341,7 @@ $(document).on('click', 'button.post_link', function(e) {
 	            var heartCheck =data.heartCheck;
 	            var hashtag;
 
-				if ( userEmail == email ) {
+				if ( userEmail == myInfo ) {
 					$('.modifyBtn').css('display', 'inline-block');
 					$('.modifyBtn').attr('href', '/init/post/' + $('.modifyBtn').attr('href')+postNo)
 					$('.deleteBtn').css('display', 'inline-block');
@@ -361,6 +351,12 @@ $(document).on('click', 'button.post_link', function(e) {
 					$('.deleteBtn').css('display', 'none');
 				}
 
+				if ( userProfileImg2 === '' || userProfileImg2 === null ) {
+					$('.profile-img-s img').attr('src', '/init/resources/profileImg/nulluser.svg');
+				} else {
+					$('.profile-img-s img').attr('src', '/init/resources/profileImg/'+ userProfileImg2);
+
+				} 
 
 	            if (data.hashtag != null) {
 	            	hashtag = data.hashtag.split('#');
@@ -441,7 +437,7 @@ function modalLike(element, postNo) {
     	url :'/init/post/addLike.do',
      	data : {
         	postNo : postNo,
-            email : email
+            email : myInfo
         },
      	type : 'post',
      	beforeSend: function(xhr){
@@ -483,7 +479,7 @@ $(document).on('click', '.addcomment', function () {
 		data : {postNo : postNo,
 				content : content,
 				grpl : grpl,
-				email : email},
+				email : myInfo},
 		beforeSend: function(xhr){
 	 	  	var token = $("meta[name='_csrf']").attr('content');
 	 		var header = $("meta[name='_csrf_header']").attr('content');
@@ -520,19 +516,29 @@ function getComments(postNo) {
 		    xhr.setRequestHeader(header, token);
 		},
         success:function(data){
-
+			
 	       	for(var i=0; i<data.length; i++){
+				var upimg = data[i].userProfileImg;
+			
 				comments += '<div class="comment-block row mx-0 my-1 d-flex">';
 				comments +=	'<div class="profile-img-xxs col-1 px-0">';
-				comments +=	'<div class="img-xxs border"></div>';
+				comments +=	'<div class="img-xxs">';
+				
+				if ( upimg === '' || upimg === null ) {
+					comments += '<img src="/init/resources/profileImg/nulluser.svg"/>';
+				} else {
+					comments += '<img src="/init/resources/profileImg/' + upimg + '" />';
+				}
+				
+				comments += '</div>';
 				comments +=	'</div>';
 				comments +=	'<span class="col-3 pl-1 nickname" style="font-size: 14px; font-weight: 600;">' + data[i].userNick + '</span>';
 	           	comments += '<span class="col-6 px-0 comment-text" style="font-size: 13px;">'+data[i].content+'</span>';
 					
-				if(email!=="" && email!==null && email!=="null"){
+				if(myInfo!=="" && myInfo!==null && myInfo!=="null"){
 					comments += '<span class="replyClick col-1 px-0" data-count="0" style="font-size: 5px; cursor : pointer;">답글</span>';
 				}
-				if(email===data[i].email){
+				if(myInfo===data[i].email){
 					comments += '<i class="fa-solid fa-x deleteRe" style="font-size:5px; color:red; cursor : pointer;" data-no="'+data[i].commentNo+'"></i><br/>';
 				}
 
@@ -576,7 +582,7 @@ function getComments(postNo) {
 							grp : grp,
 							grpl : grpl,
 							grps : grps,
-							email : email},
+							email : myInfo},
 					beforeSend: function(xhr){
 				 	  	var token = $("meta[name='_csrf']").attr('content');
 				 		var header = $("meta[name='_csrf_header']").attr('content');

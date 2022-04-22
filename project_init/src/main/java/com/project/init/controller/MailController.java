@@ -170,4 +170,60 @@ public class MailController {
 	    }        
 	}
 	
+	
+	@ResponseBody
+	@RequestMapping(value = "mailCert", method = RequestMethod.GET)
+    public String mailCert(HttpServletRequest request) throws Exception {
+		logger.info("mailCert() in >>> ");
+
+		String email = request.getParameter("email");
+				
+		// mail subject
+        String subject = "[WAYG] 회원탈퇴를 위한 인증번호입니다.";
+        
+        
+        // mail content
+        String content= "";
+        String pinNum = "";
+        for ( int i = 0; i < 6; i++ ) {
+        	int pin = (int)(Math.random() * 10);
+        	
+        	if ( i == 0 && pin == 0 ) {
+        		pinNum += pin + 1;
+        	}
+        	
+        	pinNum += pin + "";
+        }
+        
+        
+        content += "안녕하세요, WAYG입니다.<br/>"; 
+        content += "이메일 인증을 위한 PIN 번호입니다.<br/>아래의 번호를 확인하시고 회원 탈퇴 확인창에 정확히 입력해주세요.<br/>";
+        content += "<br/>회원님의 인증번호는 " + pinNum + "입니다.<br />";
+        
+        
+        // sender mail-address
+        String from = "WAYG <wayg.superad@gmail.com>";
+        
+        // receiver mail-address
+        String to = email;
+        
+        
+	    try {
+	        MimeMessage mail = mailSender.createMimeMessage();
+	        MimeMessageHelper mailHelper = new MimeMessageHelper(mail, true, "UTF-8");
+	            
+	        mailHelper.setFrom(from);
+	        mailHelper.setTo(to);
+	        mailHelper.setSubject(subject);
+	        // use html statement
+	        mailHelper.setText(content, true);       
+	        mailSender.send(mail);
+	        return pinNum;
+	        
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	        return "error";
+	    }        
+	}
+	
 }

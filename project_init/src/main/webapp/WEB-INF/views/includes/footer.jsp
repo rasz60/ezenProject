@@ -42,12 +42,12 @@ textarea.contact-input {
 <footer class="bg-dark d-flex justify-content-center">
 	<form action="" class="container row mx-0 mt-2">
 		<b class="display-4 text-warning col-1"><i class="fa-solid fa-q"></i></b>
-		<input type="text" name="subject" class="form-control col-11 mt-4 contact-input" placeholder="여러분의 의견을 보내주세요." required/>
+		<input type="text" name="subject" class="form-control col-11 mt-4 contact-input" placeholder="여러분의 의견을 보내주세요." autocomplete="off" required/>
 	
-		<input type="text" name="mail" class="form-control col-10 mt-1 ml-3 mr-5 contact-input" placeholder="Your email address" required/>
+		<input type="text" name="mail" class="form-control col-10 mt-1 ml-3 mr-5 contact-input" placeholder="Your email address" autocomplete="off" required/>
 		<button type="submit" id="sendQnABtn" class="btn btn-sm btn-info ml-2 col-1 p-0"><i class="fa-regular fa-envelope"></i></button>
 
-		<textarea name="content" class="form-control contact-input" id="" cols="30" rows="2" placeholder="Contact Us-*" required></textarea>
+		<textarea name="content" class="form-control contact-input" id="" cols="30" rows="2" placeholder="Contact Us-*" autocomplete="off" required></textarea>
 	</form>
 </footer>
 

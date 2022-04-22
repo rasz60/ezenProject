@@ -29,6 +29,7 @@
 <title>Insert title here</title>
 
 <script>
+var myEmail = '<c:out value="${myPageInfo.userEmail}" />';
 var myNick = '<c:out value="${myPageInfo.userNick}" />';
 var gender = '<c:out value="${myPageInfo.userGender}" />';
 var myPst = '<c:out value="${myPageInfo.userPst}" />';
@@ -181,6 +182,32 @@ pre.header-bio {
 								<h4 class="modal-title">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WAYG</h4>
 							</div>
 							<div class="modal-body bg-light">
+								<h4 class="certTypeSelect display-4 text-center" style="font-size:20px; font-weight: 500;">인증 수단 선택</h4>
+								<p style="font-size: 12px; font-style: italic; color: orange;">소셜 로그인을 이용하시는 회원님은<br/>이메일 인증을 체크해주세요.</p>
+								<hr />
+								
+								<div class="row mx-0">
+									<label class="col-6">
+										<input type="radio" id="ct1" name="certainType"/>&nbsp;비밀번호
+									</label>
+									
+									<label class="col-6">	
+										<input type="radio" id="ct2" name="certainType"/>&nbsp;이메일
+									</label>
+								</div>
+								
+								<hr />
+								
+								<div class="mailCert d-none">
+									<div class="form-group row mx-0 d-flex justify-content-around">
+										<input type="number" class="form-control col-7" id="pinInput" name="pinInput" autocomplete="off" required readonly/>
+										<button type="button" class="btn btn-sm btn-dark col-4 sendPin">PIN 발송</button>
+										<button type="button" class="btn btn-sm btn-primary col-4 pinCheck d-none">PIN 확인</button>
+										<div class="col-12 d-none" style="color:green; font-size:12px; font-style: italic;" id="mailDone">메일 전송이 완료되었습니다.</div>
+									</div>
+									
+								</div>
+								
 								<form action="chkPwForResig" id="chkPwForResig" method="post">
 									<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 									<div class="form-group">

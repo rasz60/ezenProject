@@ -44,6 +44,8 @@
 						</div>
 						
 						<a href="#" class="text-secondary findInfo">Find your info <i class="fa-regular fa-circle-question"></i></a>
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<a href="#" class="text-warning testers">Tester <i class="fa-solid fa-flask-vial"></i></a>
 						
 						<div class="form-group" style="visibility:hidden; color:red; font-size:12px;" id="loginError">아이디 혹은 비밀번호가 잘못 입력되었습니다.</div>
 						
@@ -124,6 +126,7 @@ function onSignInFailure(t){
 <script>
 
 	$('#naverIdLogin_loginButton').click(function () {
+		alert('현재는 테스트 계정으로 등록된 계정만 로그인이 가능합니다.');
 		$('#naverIdLogin').trigger('click');
 	});
 
@@ -145,6 +148,8 @@ Kakao.init('4b27bea0673ec02040a9741b089495fb');
 console.log(Kakao.isInitialized());
 
 $('#klogin').click(function kakaologin() {
+	alert('현재는 테스트 계정으로 등록된 계정만 로그인이 가능합니다.');
+	
     Kakao.Auth.login({
         success: function (response) {
         	Kakao.API.request({
@@ -185,7 +190,15 @@ $('#klogin').click(function kakaologin() {
 
 </script>
 
+<script>
+$('a.testers').click(function(e) {
+	e.preventDefault();
+	$('input#userId').val('tester@wayg.com');
+	$('input#userPwd').val('wayg10!@');
+	$('#ModalLoginBtn').trigger('click');
+})
 
+</script>
 
 
 
