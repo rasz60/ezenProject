@@ -11,6 +11,11 @@
 <title>login</title>
 <style>
 
+button#findCloseBtn {
+	font-size: 2rem;
+	cursor: pointer;
+}
+
 h3.display-4 {
 	font-size: 30px;
 }
@@ -35,7 +40,7 @@ p.infoPincheck, p.infoPwdcheck, p.infoPwdcheck2 {
 				
 				<div class="modal-body d-flex justify-content-center">
 					<%-- first. id 찾기 --%>
-					<div class="findIdBox">
+					<div class="findIdBox mb-3">
 						<h3 class="col-12 font-italic display-4">FIND YOUR INFO</h3>
 						<hr />
 					
@@ -59,19 +64,19 @@ p.infoPincheck, p.infoPwdcheck, p.infoPwdcheck2 {
 
 
 					<%-- second. password 찾기 --%>
-					<div class="findPwdBox d-none">
+					<div class="findPwdBox mb-3 d-none">
 						<h3 class="col-12 font-italic display-4">NEW PASSWORD</h3>
 						<hr />
 					
 						<div class="form-group">
 							<label for="userPwd">PASSWORD</label>
-							<input type="password" class="form-control" id="userPwdCheck1" name="npw" required/>
+							<input type="password" class="form-control" id="userPwdCheck1" name="npw" required autocomplete="off"/>
 							<p class="infoPwdcheck font-italic"></p>
 						</div>
 	
 						<div class="form-group">
 							<label for="userPwdCheck">PASSWORD CHECK</label>
-							<input type="password" class="form-control" id="userPwdCheck2" name="npwc" required readonly/>
+							<input type="password" class="form-control" id="userPwdCheck2" name="npwc" required readonly autocomplete="off"/>
 							<p class="infoPwdcheck2 font-italic"></p>
 						</div>
 						

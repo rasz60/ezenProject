@@ -153,7 +153,7 @@ pre.header-bio {
 											<c:forEach begin="${row*4 }" end="${totalCount - 1}" var="index">
 												<div class="post mr-2"  data-value="${list.get(index).postNo}">
 													<div class="post-top border rounded">
-														<img class="titleimg" src="images/${list.get(index).titleImage}"/>
+														<img class="titleimg" src="../images/${list.get(index).titleImage}"/>
 													</div>
 												</div>
 											</c:forEach>

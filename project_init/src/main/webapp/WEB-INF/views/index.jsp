@@ -66,6 +66,24 @@ if ( u_width < 1000 ) {
 	alert('작은 화면에서 접속시 정상적으로 구동되지 않습니다.\nPC에서 이용을 부탁드리겠습니다.');
 }
 
+if(!navigator.geolocation) { 
+	alert("지원하지 않음");
+} else { // found() 콜백 함수 등록
+	navigator.geolocation.getCurrentPosition(found); 
+}
+
+// 위치가 파악되면 found()가 호출 
+// 위치 정보 들어 있는 position 객가 매개 변수로 넘어온다.
+function found(position) {
+	var now = new Date(position.timestamp);
+	var lat = position.coords.latitude; // 위도
+	var lon = position.coords.longitude; // 경도
+	
+	console.log(now);
+	console.log(lat);
+	console.log(lon);
+}
+
 
 <c:if test="${not empty user}">
 	var email = '<c:out value="${user.userEmail}" />';
@@ -204,13 +222,173 @@ if ( u_width < 1000 ) {
 		</div>
 	</div>
 	
+	<c:set var="closestPosts" value="${post.size() }" />
 	<c:set var="lastestPosts" value="${post.size() }" />
 	<c:set var="bestLikePosts" value="${likeList.size() }" />
 	<c:set var="bestViewPosts" value="${viewList.size() }" />
 	
-	<div class="main-body-bottom mb-5 mt-3">
-		<div class="recommand recommand-1 mt-4 mb-2">
-			<div class="recommand-icon text-primary d-flex justify-content-between">
+	<div class="main-body-bottom mt-5 mb-5">
+		<div class="recommand recommand-1">
+			<div class="recommand-icon text-success d-flex justify-content-between">
+				<i class="btn1 fa-solid fa-location-arrow"></i>
+				<s:authorize access="isAuthenticated()">
+				<a href="/init/search/lastest" class="text-primary">
+					<i class="btn2 fa-regular fa-circle-right"></i>
+				</a>
+				</s:authorize>
+			</div>
+			<div class="posts d-flex justify-content-between mt-2">
+			<c:choose>
+				<c:when test="${closestPosts > 3}">
+					<c:forEach items="${post}" var="post" begin="0" end="3" >
+						<s:authorize access="isAnonymous()">
+						<div class="anFeed mr-2">
+						</s:authorize>
+						<s:authorize access="isAuthenticated()">
+						<div class="post mr-2" data-value="${post.postNo }"">
+						</s:authorize>
+							<div class="post-top border rounded">
+								<img src="/init/resources/images/${post.titleImage}" alt="" />
+							</div>
+							
+							<div class="post-bottom bg-light border">
+								<div class="d-flex pt-1" style="height: 60%">
+									<div class="profile-box col-2 px-0">
+										<div id="post-profile">
+											<c:if test="${post.userProfileImg != null }">
+											<img src="/init/resources/profileImg/${post.userProfileImg }" alt="" />
+											</c:if>
+											
+											<c:if test="${post.userProfileImg eq null }">
+											<img src="/init/resources/profileImg/nulluser.svg" alt="" />
+											</c:if>
+										</div>
+									</div>
+									<div class="col-10 pt-2">
+										<b>${post.userNick}</b>
+									</div>
+								</div>
+									
+									
+								<div class="row mx-2 d-flex justify-content-around" style="height: 40%">
+									<div class="col-4 px-1">
+										<i class="fa-solid fa-heart"></i>
+										${post.likes}
+									</div>
+									
+									<div class="col-4 px-1">
+										<i class="fa-regular fa-circle-check"></i>
+										${post.views}
+									</div>
+									
+									<div class="col-4 px-1">
+										<i class="fa-solid fa-comment-dots"></i>
+										${post.comments}
+									</div>
+								</div>
+							</div>
+						</div>
+					</c:forEach>
+				</c:when>
+				
+				<c:otherwise>
+					<c:forEach items="${post}" var="post" begin="0" end="${closestPosts }" >
+						<s:authorize access="isAnonymous()">
+						<div class="anFeed mr-2">
+						</s:authorize>
+						<s:authorize access="isAuthenticated()">
+						<div class="post mr-2" data-value="${post.postNo }">
+						</s:authorize>
+							<div class="post-top border rounded">
+								<img src="/init/resources/images/${post.titleImage}" alt="" />
+							</div>
+							
+							<div class="post-bottom bg-light border">
+								<div class="d-flex pt-1" style="height: 60%">
+									<div class="profile-box col-2 px-0">
+										<div id="post-profile">
+											<c:if test="${post.userProfileImg != null }">
+											<img src="/init/resources/profileImg/${post.userProfileImg }" alt="" />
+											</c:if>
+											
+											<c:if test="${post.userProfileImg eq null }">
+											<img src="/init/resources/profileImg/nulluser.svg" alt="" />
+											</c:if>
+										</div>
+									</div>
+									<div class="col-10 pt-2">
+										<b>${post.userNick}</b>
+									</div>
+								</div>
+									
+									
+								<div class="row mx-2 d-flex justify-content-around" style="height: 40%">
+									<div class="col-4 px-1">
+										<i class="fa-solid fa-heart"></i>
+										${post.likes}
+									</div>
+									
+									<div class="col-4 px-1">
+										<i class="fa-regular fa-circle-check"></i>
+										${post.views}
+									</div>
+									
+									<div class="col-4 px-1">
+										<i class="fa-solid fa-comment-dots"></i>
+										${post.comments}
+									</div>
+								</div>
+							</div>
+						</div>
+					</c:forEach>
+					
+					<c:forEach begin="${closestPosts }" end="3" >
+						<div class="nullPost mr-2">
+							<div class="post-top border rounded">
+								<img src="" alt="" />
+							</div>
+							
+							<div class="post-bottom bg-light border">
+								<div class="d-flex pt-1" style="height: 60%">
+									<div class="profile-box col-2 px-0">
+										<div id="post-profile" class="border">
+										
+										</div>
+									</div>
+									<div class="col-10 pt-2">
+										<b></b>
+									</div>
+								</div>
+									
+									
+								<div class="row mx-2 d-flex justify-content-around" style="height: 40%">
+									<div class="col-4 px-1">
+										<i class="fa-solid fa-heart"></i>
+										
+									</div>
+									
+									<div class="col-4 px-1">
+										<i class="fa-regular fa-circle-check"></i>
+										
+									</div>
+									
+									<div class="col-4 px-1">
+										<i class="fa-solid fa-comment-dots"></i>
+									</div>
+								</div>
+							</div>
+						</div>
+					</c:forEach>
+				</c:otherwise>
+			</c:choose>			
+			</div>
+		</div>
+	
+	
+	
+	
+		<div class="recommand recommand-2 mt-5">
+			<div class="recommand-icon text-warning d-flex justify-content-between">
 				<i class="btn1 fa-regular fa-clock"></i>
 				<s:authorize access="isAuthenticated()">
 				<a href="/init/search/lastest" class="text-primary">
@@ -366,7 +544,7 @@ if ( u_width < 1000 ) {
 		</div>
 
 		
-		<div class="recommand recommand-2 mb-2 mt-5">
+		<div class="recommand recommand-3 mt-5">
 			<div class="recommand-icon text-danger d-flex justify-content-between">
 				<i class="btn1 fa-regular fa-heart"></i>
 				<s:authorize access="isAuthenticated()">
@@ -520,8 +698,8 @@ if ( u_width < 1000 ) {
 			</div>
 		</div>
 		
-		<div class="recommand recommand-3 mb-2 mt-5">
-			<div class="recommand-icon text-success d-flex justify-content-between">
+		<div class="recommand recommand-4 mb-3 mt-5">
+			<div class="recommand-icon text-primary d-flex justify-content-between">
 				<i class="btn1 fa-regular fa-thumbs-up"></i>
 				<s:authorize access="isAuthenticated()">
 				<a href="/init/search/bestViews" class="text-success">
@@ -674,6 +852,7 @@ if ( u_width < 1000 ) {
 			</c:choose>
 			</div>
 		</div>
+
 	</div>
 </section>
 <%@ include file="includes/login_modal.jsp" %>

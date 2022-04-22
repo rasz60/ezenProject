@@ -37,6 +37,8 @@ public interface PostIDao {
 
 	public void deletePost(String postNo);
 	
+	public ArrayList<PostDto> lastestList(String email);
+	
 	public ArrayList<PostDto> likeList(String email);
 	
 	public ArrayList<PostDto> viewList(String email);

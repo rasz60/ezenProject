@@ -31,7 +31,7 @@
 				</div>
 				
 				<div class="modal-body d-flex justify-content-center">
-					<form action="/init/login" method="post">
+					<form action="/init/login" method="post" class="mb-3">
 						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 						<div class="form-group">
 							<label for="userId">ID</label>
@@ -145,7 +145,7 @@ function onSignInFailure(t){
 <script>
 
 Kakao.init('4b27bea0673ec02040a9741b089495fb');
-console.log(Kakao.isInitialized());
+//console.log(Kakao.isInitialized());
 
 $('#klogin').click(function kakaologin() {
 	alert('현재는 테스트 계정으로 등록된 계정만 로그인이 가능합니다.');

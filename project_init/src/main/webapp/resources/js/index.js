@@ -1,3 +1,5 @@
+$('#roader').css('display', 'block');
+
 //메인 필터객체 생성
 var mainFilter = document.querySelector('.main-filter');
 //메인 필터 객체에 변화가 생겼을 때 이벤트가 실행될 수 있는 onchange이벤트 생성
@@ -182,7 +184,7 @@ $('#filterbtn').click(function(e){
 		        xhr.setRequestHeader(header, token);
 		},
 		success: function(data) {
-			console.log(data);
+			//console.log(data);
 
 			var plans = []; // markers를 배열로 선언
 			var markers = [];
@@ -267,47 +269,50 @@ $('#filterbtn').click(function(e){
 						data[i].category = "약국";
 						break;
 				}
-				var planObject;
+				
 				var placeName = data[i].placeName;
 				var planAddress = data[i].address;
 				var planCategory = data[i].category;
-				var planCount = 0;
-				
 
-				for( var i = 0; i < plans.length; i++ ) {
-					var newMarker = marker.getPosition();
-					var oldMarker = plans[i].marker.getPosition();
+				var planObject = {
+						marker : marker,
+						placeName : placeName,
+						address : planAddress,
+						category : planCategory,
+						count : 1
+					};
+
+				if ( plans.length == 0 ) {
+					plans.push(planObject);
 					
-					if ( newMarker.La === oldMarker.La && newMarker.Ma === oldMarker.Ma ) {
-						plans[i].count = Number(plans[i].count)+1;
-						planCount = plans[i].count;
-
-					} else {
-						planCount = 1;
+				} else {
+					
+					for( var j = 0; j < plans.length; j++ ) {
+						var newMarker = marker.getPosition();
+						var oldMarker = plans[j].marker.getPosition();
+							
+						if ( newMarker.La === oldMarker.La && newMarker.Ma === oldMarker.Ma ) {
+							plans[j].count = Number(plans[j].count)+1;
+							planObject.count = plans[j].count;
+							break;
+						}
 					}
 				}
 				
-				planObject = {
-					marker : marker,
-					placeName : placeName,
-					address : planAddress,
-					category : planCategory,
-					count : planCount
+				if ( planObject.count == 1 ) {
+					plans.push(planObject);
 				}
-				plans.push(planObject);
-				
-				console.log(plans.length);
-				
-				
-				(function(marker, placeName, planAddress, planCategory, planCount) { //이벤트 등록
-					kakao.maps.event.addListener(marker, 'mouseover', function() { //마커에 마우스 올렸을 때
-			            displayInfowindow(marker, placeName, planAddress, planCategory, planCount); // displayInfowindow()에서 처리
-			        });
-				    kakao.maps.event.addListener(marker, 'mouseout', function() { // 마커에 마우스 치웠을 때 인포창 닫기
-			            infowindow.close();
-			        });	
-				})(marker, placeName, planAddress, planCategory, planCount);
-				
+
+				(function(planObject) { //이벤트 등록
+					kakao.maps.event.addListener(planObject.marker, 'mouseover', function() { //마커에 마우스 올렸을 때
+		        		displayInfowindow(planObject); // displayInfowindow()에서 처리
+		    		});
+			
+		    		kakao.maps.event.addListener(planObject.marker, 'mouseout', function() { // 마커에 마우스 치웠을 때 인포창 닫기
+		        		infowindow.close();
+		    		});
+				})(planObject);
+								
 			 }
 			clusterer.addMarkers(markers); // 클러스터러에 마커들을 추가		
 		},
@@ -316,31 +321,31 @@ $('#filterbtn').click(function(e){
 		}
 	});	
 });
-function displayInfowindow(marker, placeName, address, category, count) { //인포윈도우 생성
+function displayInfowindow(planObject) { //인포윈도우 생성
 
-	if( Number(count) > 9999 ) {
-		count = '9999+';
+	if( Number(planObject.count) > 9999 ) {
+		planObject.count = '9999+';
 	}
 	
-	if ( category == null ) {
-		category = '준비중';
+	if ( planObject.category == null ) {
+		planObject.category = '준비중';
 	}
 	
 	var content = '<div class="wrap">' + 
 		       '<div class="info">' + 
 	           '<div class="title bg-info">' + 
 	     	   '<img src="./images/marker.png" width="25px" height="25px" background-color="white">&nbsp;&nbsp;&nbsp;' + 
-	     		placeName + 
+	     		planObject.placeName + 
 	            '</div>' + 
 	            '<div class="body">' + 
 	            '<div class="img">' +
 	            '<img src="./images/infowindow-logo.png">' +
 	            '</div>' + 
 	            '<div class="content">' + 
-				'<div class="placeName">' + '이름 : ' + placeName + '</div>' +
-	            '<div class="address">' + '주소 : ' + address + '</div>' +
-	            '<div class="category">' + '장소 : ' + category + '</div>' +
-				'<span class="count">' + count + '</span>' +
+				'<div class="placeName">' + '이름 : ' + planObject.placeName + '</div>' +
+	            '<div class="address">' + '주소 : ' + planObject.address + '</div>' +
+	            '<div class="category">' + '장소 : ' + planObject.category + '</div>' +
+				'<span class="count">' + planObject.count + '</span>' +
 	            '</div>' + 
 	            '</div>' + 
 	            '</div>' + 
@@ -348,7 +353,7 @@ function displayInfowindow(marker, placeName, address, category, count) { //인�
 	       		'</div>';
 	
 	 infowindow.setContent(content);
-	 infowindow.open(map, marker);
+	 infowindow.open(map, planObject.marker);
 
 	$('div.wrap').parent().parent().css('border', 'none');
 	$('div.wrap').parent().parent().css('background-color', 'transparent');
@@ -370,6 +375,7 @@ kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
 
 
 $(document).ready(function() {
+	$('#roader').css('display', 'none');
 	$('#filterbtn').trigger('click');
 
 	$('.post').click(function() {

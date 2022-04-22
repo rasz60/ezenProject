@@ -63,6 +63,8 @@ CREATE TABLE post_dt (
  planNum NUMBER NOT NULL,
  planDtNum NUMBER NOT NULL,
  location VARCHAR2(1000) NOT NULL,
+ latitude VARCHAR2(30), 
+ longitude VARCHAR2(30),
  
  CONSTRAINT fk_postno_postdt FOREIGN KEY(postno) REFERENCES post(postno) ON DELETE CASCADE,
  CONSTRAINT fk_planNum_postdt FOREIGN KEY(planNum) REFERENCES plan_mst(planNum) ON DELETE CASCADE,

@@ -333,7 +333,7 @@ $(document).ready(function() {
       	if(arr.length+arr2.length+(arrImages.length-1)>10){
          	alert('10장 이상 등록할수 없습니다.\n다시 선택해주세요');
 
-      	}else if (totalSize>10000000-1){
+      	}else if (totalSize>20000000-1){
          	alert('이미지의 총 용량이 10MB를 초과합니다.\n 다른 이미지를 올려주세요');
          
       	}else{

@@ -3,7 +3,7 @@
 }
 
 #loginModal .modal-dialog .modal-content {
-	height : 45%;
+	height : auto;
 	border : none;
 	border-radius: 0;
 }

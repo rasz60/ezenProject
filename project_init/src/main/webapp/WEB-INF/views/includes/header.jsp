@@ -37,7 +37,7 @@
 		      	</div>
 				<input type="text" class="form-control bg-light mr-1 searchVal" size="30" aria-label="000" placeholder="search...">
 				<s:authorize access="isAnonymous()">
-	    			<a href="#" class="btn btn-default mr-1 anFeed"><i class="fa-brands fa-sistrix"></i></a>
+	    			<a href="#" class="btn btn-default mr-1 de-work"><i class="fa-brands fa-sistrix"></i></a>
 	    		</s:authorize>
 	    		
 	    		<s:authorize access="isAuthenticated()">
@@ -120,6 +120,11 @@ $(document).ready(function(){
 		e.preventDefault();
 		$('#loginModalBtn').trigger('click');
 	});
+	
+	$('.de-work').click(function(e) {
+		e.preventDefault();
+		$('#loginModalBtn').trigger('click');
+	})
 	
 	$('.keyword').click(function () {
 		$('.keywordView').text($(this).attr('value'));

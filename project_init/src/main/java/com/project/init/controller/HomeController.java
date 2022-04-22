@@ -83,9 +83,7 @@ public class HomeController {
 			
 		} 
 		
-		
-
-		ArrayList<PostDto> post = postDao.list(uId);
+		ArrayList<PostDto> post = postDao.lastestList(uId);
 		model.addAttribute("post", post);
 		
 		ArrayList<PostDto> likeList = postDao.likeList(uId);

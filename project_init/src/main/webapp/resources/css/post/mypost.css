@@ -29,6 +29,7 @@
 	cursor: pointer;
 	line-height: 320px;
 	text-align: center;
+	overflow: hidden;
 }
 
 #feedPost #postBox .posts .post-top img {
