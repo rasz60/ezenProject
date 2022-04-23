@@ -88,10 +88,12 @@ public class PostModifyDoCommand implements ICommand {
 			int planNum = Integer.parseInt(multi.getParameter("planNum"));
 
 			for(int i = 0; i < planDtNum.length; i++ ) {
-				PostDtDto dtDto = new PostDtDto(Integer.parseInt(multi.getParameter("postNo")),
-												planNum,
-												Integer.parseInt(planDtNum[i]),
-												placeName[i]);
+				PostDtDto dtDto = new PostDtDto();
+				
+				dtDto.setPostNo(Integer.parseInt(multi.getParameter("postNo")));
+				dtDto.setPlanNum(planNum);
+				dtDto.setPlanDtNum(Integer.parseInt(planDtNum[i]));
+				dtDto.setLocation(placeName[i]);
 				
 				insertDtDtos.add(dtDto);
 			}

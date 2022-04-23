@@ -59,6 +59,11 @@
 </style>
 
 <script>
+<c:if test="${not empty user}">
+	var email = '<c:out value="${user.userEmail}" />';
+</c:if>
+var lat;
+var lon;
 
 var u_width = $(window).width();
 
@@ -68,26 +73,80 @@ if ( u_width < 1000 ) {
 
 if(!navigator.geolocation) { 
 	alert("지원하지 않음");
+	console.log(lat);
 } else { // found() 콜백 함수 등록
-	navigator.geolocation.getCurrentPosition(found); 
+	navigator.geolocation.getCurrentPosition(found);
 }
 
-// 위치가 파악되면 found()가 호출 
-// 위치 정보 들어 있는 position 객가 매개 변수로 넘어온다.
+//위치가 파악되면 found()가 호출 
+//위치 정보 들어 있는 position 객가 매개 변수로 넘어온다.
 function found(position) {
 	var now = new Date(position.timestamp);
-	var lat = position.coords.latitude; // 위도
-	var lon = position.coords.longitude; // 경도
-	
-	console.log(now);
-	console.log(lat);
-	console.log(lon);
+	lat = position.coords.latitude; // 위도
+	lon = position.coords.longitude; // 경도
 }
 
+// 가까운 거리에 있는 추천 포스트 불러오기
+function getClose(lat, lon) {
+	$.ajax({
+		url: '/init/closest.do',
+		type: 'get',
+		data: {latitude : lat, longitude : lon},
+		success: function(data) {
+			for ( var i = 0; i < data.length; i++ ) {
+				// data parsing;
+				var postNo = data[i].postNo;
+				var titleImg = data[i].titleImage;
+				var profile = data[i].userProfileImg;
+				var nickname = data[i].userNick;
+				var views = data[i].views;
+				var likes = data[i].likes;
+				var comments = data[i].comments;
+				
+				var target = $('div.recommand-1>div.posts>div:nth-child(' + (i+1) + ')');
+				
+				target.attr('data-value', postNo);
+				
+				if ( profile == null || profile == '') {
+					profile = 'nulluser.svg';
+				}
+				// titleImg
+				target.children('.post-top').children('img').attr('src', '/init/resources/images/' + titleImg);
+				
+				// profile & nickname
+				target.children('.post-bottom').children('div').children('.profile-box').children('#post-profile').children('img').attr('src', '/init/resources/profileImg/' + profile);
+				target.children('.post-bottom').children('div').children('.col-10').children('b').text(nickname);
+				
+				// likes & views & comments
+				target.children('.post-bottom').children('div:nth-child(2)').children('div:nth-child(1)').append(likes);
+				target.children('.post-bottom').children('div:nth-child(2)').children('div:nth-child(2)').append(views);
+				target.children('.post-bottom').children('div:nth-child(2)').children('div:nth-child(3)').append(comments);
+				
+				
+				if ( target.attr('data-value') != 0 ) {			
+					target.removeClass('nullPost');
+					target.addClass('post');
+				}
+			}
+			
 
-<c:if test="${not empty user}">
-	var email = '<c:out value="${user.userEmail}" />';
-</c:if>
+		},
+		error : function() {
+			
+		}
+	})
+}
+
+$(document).ready(function() {
+
+	if ( lat === undefined ) {
+		lat = '37.5666805';
+		lon = '126.9784147';
+	}
+	
+	getClose(lat, lon);
+})
+
 </script>
 </head>
 
@@ -222,7 +281,6 @@ function found(position) {
 		</div>
 	</div>
 	
-	<c:set var="closestPosts" value="${post.size() }" />
 	<c:set var="lastestPosts" value="${post.size() }" />
 	<c:set var="bestLikePosts" value="${likeList.size() }" />
 	<c:set var="bestViewPosts" value="${viewList.size() }" />
@@ -238,152 +296,48 @@ function found(position) {
 				</s:authorize>
 			</div>
 			<div class="posts d-flex justify-content-between mt-2">
-			<c:choose>
-				<c:when test="${closestPosts > 3}">
-					<c:forEach items="${post}" var="post" begin="0" end="3" >
-						<s:authorize access="isAnonymous()">
-						<div class="anFeed mr-2">
-						</s:authorize>
-						<s:authorize access="isAuthenticated()">
-						<div class="post mr-2" data-value="${post.postNo }"">
-						</s:authorize>
-							<div class="post-top border rounded">
-								<img src="/init/resources/images/${post.titleImage}" alt="" />
-							</div>
-							
-							<div class="post-bottom bg-light border">
-								<div class="d-flex pt-1" style="height: 60%">
-									<div class="profile-box col-2 px-0">
-										<div id="post-profile">
-											<c:if test="${post.userProfileImg != null }">
-											<img src="/init/resources/profileImg/${post.userProfileImg }" alt="" />
-											</c:if>
-											
-											<c:if test="${post.userProfileImg eq null }">
-											<img src="/init/resources/profileImg/nulluser.svg" alt="" />
-											</c:if>
-										</div>
-									</div>
-									<div class="col-10 pt-2">
-										<b>${post.userNick}</b>
+				<c:forEach begin="0" end="3" >
+					<s:authorize access="isAnonymous()">
+					<div class="anFeed mr-2" data-value="0">
+					</s:authorize>
+					<s:authorize access="isAuthenticated()">
+					<div class="nullPost mr-2" data-value="">
+					</s:authorize>
+						<div class="post-top border rounded">
+							<img src="" alt="" />
+						</div>
+						
+						<div class="post-bottom bg-light border">
+							<div class="d-flex pt-1" style="height: 60%">
+								<div class="profile-box col-2 px-0">
+									<div id="post-profile">
+										<img src="" alt="" />
 									</div>
 								</div>
-									
-									
-								<div class="row mx-2 d-flex justify-content-around" style="height: 40%">
-									<div class="col-4 px-1">
-										<i class="fa-solid fa-heart"></i>
-										${post.likes}
-									</div>
-									
-									<div class="col-4 px-1">
-										<i class="fa-regular fa-circle-check"></i>
-										${post.views}
-									</div>
-									
-									<div class="col-4 px-1">
-										<i class="fa-solid fa-comment-dots"></i>
-										${post.comments}
-									</div>
+								<div class="col-10 pt-2">
+									<b></b>
+								</div>
+							</div>
+								
+								
+							<div class="row mx-2 d-flex justify-content-around" style="height: 40%">
+								<div class="col-4 px-1">
+									<i class="fa-solid fa-heart"></i>
+								</div>
+								
+								<div class="col-4 px-1">
+									<i class="fa-regular fa-circle-check"></i>
+								</div>
+								
+								<div class="col-4 px-1">
+									<i class="fa-solid fa-comment-dots"></i>
 								</div>
 							</div>
 						</div>
-					</c:forEach>
-				</c:when>
-				
-				<c:otherwise>
-					<c:forEach items="${post}" var="post" begin="0" end="${closestPosts }" >
-						<s:authorize access="isAnonymous()">
-						<div class="anFeed mr-2">
-						</s:authorize>
-						<s:authorize access="isAuthenticated()">
-						<div class="post mr-2" data-value="${post.postNo }">
-						</s:authorize>
-							<div class="post-top border rounded">
-								<img src="/init/resources/images/${post.titleImage}" alt="" />
-							</div>
-							
-							<div class="post-bottom bg-light border">
-								<div class="d-flex pt-1" style="height: 60%">
-									<div class="profile-box col-2 px-0">
-										<div id="post-profile">
-											<c:if test="${post.userProfileImg != null }">
-											<img src="/init/resources/profileImg/${post.userProfileImg }" alt="" />
-											</c:if>
-											
-											<c:if test="${post.userProfileImg eq null }">
-											<img src="/init/resources/profileImg/nulluser.svg" alt="" />
-											</c:if>
-										</div>
-									</div>
-									<div class="col-10 pt-2">
-										<b>${post.userNick}</b>
-									</div>
-								</div>
-									
-									
-								<div class="row mx-2 d-flex justify-content-around" style="height: 40%">
-									<div class="col-4 px-1">
-										<i class="fa-solid fa-heart"></i>
-										${post.likes}
-									</div>
-									
-									<div class="col-4 px-1">
-										<i class="fa-regular fa-circle-check"></i>
-										${post.views}
-									</div>
-									
-									<div class="col-4 px-1">
-										<i class="fa-solid fa-comment-dots"></i>
-										${post.comments}
-									</div>
-								</div>
-							</div>
-						</div>
-					</c:forEach>
-					
-					<c:forEach begin="${closestPosts }" end="3" >
-						<div class="nullPost mr-2">
-							<div class="post-top border rounded">
-								<img src="" alt="" />
-							</div>
-							
-							<div class="post-bottom bg-light border">
-								<div class="d-flex pt-1" style="height: 60%">
-									<div class="profile-box col-2 px-0">
-										<div id="post-profile" class="border">
-										
-										</div>
-									</div>
-									<div class="col-10 pt-2">
-										<b></b>
-									</div>
-								</div>
-									
-									
-								<div class="row mx-2 d-flex justify-content-around" style="height: 40%">
-									<div class="col-4 px-1">
-										<i class="fa-solid fa-heart"></i>
-										
-									</div>
-									
-									<div class="col-4 px-1">
-										<i class="fa-regular fa-circle-check"></i>
-										
-									</div>
-									
-									<div class="col-4 px-1">
-										<i class="fa-solid fa-comment-dots"></i>
-									</div>
-								</div>
-							</div>
-						</div>
-					</c:forEach>
-				</c:otherwise>
-			</c:choose>			
-			</div>
+					</div>
+				</c:forEach>
+			</div>	
 		</div>
-	
 	
 	
 	

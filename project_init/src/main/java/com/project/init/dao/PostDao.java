@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 
 import com.project.init.dto.CommentsDto;
 import com.project.init.dto.PlanDtDto;
-import com.project.init.dto.PlanMstDto;
 import com.project.init.dto.PostDtDto;
 import com.project.init.dto.PostDto;
 import com.project.init.dto.PostLikeDto;
@@ -192,10 +191,6 @@ public class PostDao implements PostIDao {
 	@Override
 	public void deletePost(String postNo) {
 		sqlSession.delete("deletePost", postNo);
-		sqlSession.delete("deleteComments", postNo);
-		sqlSession.delete("deletePostDt2", Integer.parseInt(postNo));
-		sqlSession.delete("deleteLikes", postNo);
-		sqlSession.delete("deleteViews", postNo);
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -243,34 +238,25 @@ public class PostDao implements PostIDao {
 
 		return res;
 	}
-	
-	
-	
-	/* unset
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public ArrayList<PostDto> search(String keyword, String searchVal) {
-		ArrayList<PostDto> dto = new ArrayList<PostDto>();
+	public ArrayList<PostDto> closestList(String lat, String lng) {
 		
-		if(searchVal.equals("writer")) {
-			dto = (ArrayList)sqlSession.selectList("searchWriter", keyword);
-			return dto;
-		}else if(searchVal.equals("content")) {
-			dto = (ArrayList)sqlSession.selectList("searchContent", keyword);
-			return dto;
-		}
-		else if(searchVal.equals("location")) {
-			dto = (ArrayList)sqlSession.selectList("searchLocation", keyword);
-			return dto;
-		}else {
-			dto = (ArrayList)sqlSession.selectList("searchHashtag", keyword);			
-			return dto;
-		}
+		PostDtDto dto = new PostDtDto();
+		dto.setLatitude(lat);
+		dto.setLongitude(lng);
+		
+		ArrayList<PostDtDto> dtos = (ArrayList)sqlSession.selectList("closest", dto);
+		
+		System.out.println(dtos.get(0).getPostNo());
 		
 		
+		ArrayList<PostDto> pdtos = (ArrayList)sqlSession.selectList("closestlist", dtos);
+		
+		return pdtos;
 	}
-
-*/
+	
+	
+	
 
 }

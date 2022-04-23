@@ -94,7 +94,19 @@ public class HomeController {
 		
 		return "index";
 	}
-	
+	@ResponseBody
+	@RequestMapping(value = "/closest.do", produces="application/json; charset=UTF-8")
+	public ArrayList<PostDto> closestDo(HttpServletRequest request, Model model) {
+		logger.info("closestDo() in >>>>");
+		
+		String lat = request.getParameter("latitude");
+		String lng = request.getParameter("longitude");
+		
+		ArrayList<PostDto> postDtos = postDao.closestList(lat, lng);
+
+		logger.info("closestDo result : postDtos.isEmpty ? " + postDtos.isEmpty());		
+		return postDtos;
+	}
 	@RequestMapping("/join")
 	public String join() {
 		logger.info("join() in >>>>");
