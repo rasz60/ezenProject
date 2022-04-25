@@ -13,7 +13,7 @@ mainFilter.onchange = function(){
 		address : ['서울', '부산', '제주', '경기', '인천', '강원', '경상', '전라', '충청', '전남', '대전', '강원', '대구', '경북'],
 		transportation : ['도보', '자가용', '고속/시외/시내버스', '지하철', '자전거', '택시', '전세/관광버스', '차량대여/렌트', '오토바이', '전동킥보드', '비행기', '선박', '기타'],
 		theme : ['방문', '데이트', '가족여행', '친구들과', '맛집탐방', '비즈니스', '소개팅', '미용', '운동', '문화생활', '여가생활']
-	}
+	};
 		
 	//메인옵션 선택에 따라 서브옵션 select
 	switch(mainOption){
@@ -32,7 +32,7 @@ mainFilter.onchange = function(){
 		case '테마' : 
 			var subOption = subOption.theme;
 			break;
-	}
+	};
 	
 	subFilter.options.length = 0;
 	
@@ -375,138 +375,151 @@ kakao.maps.event.addListener(clusterer, 'clusterclick', function(cluster) {
 
 
 $(document).ready(function() {
+	if ( lat === undefined ) {
+		lat = '37.5666805';
+		lon = '126.9784147';
+	}
+	
+	getClose(lat, lon);
+	
+	
+	
 	$('#roader').css('display', 'none');
 	$('#filterbtn').trigger('click');
 
-	$('.post').click(function() {
-		var postNo = $(this).attr("data-value");
-		
-		addview(postNo);
-		$('#modalBtn').trigger('click');
-		$.ajax({
-	           url:"/init/post/getlist.do",
-	           type:"post",
-	           data:{
-	           	postNo : postNo,
-				email : email
-			},
-			
-			beforeSend: function(xhr){
-	 		   	var token = $("meta[name='_csrf']").attr('content');
-	 			var header = $("meta[name='_csrf_header']").attr('content');
-			        xhr.setRequestHeader(header, token);
-			},
-	 		success:function(data){
-	 			$('#modalBtn').trigger('click');
-	            
-	 			// data parsing
-				var userEmail = data.email;
-	 			var userNick=data.userNick;
-	            var userProfileImg = data.userProfileImg;
-	            var likes = data.likes;
-	            var content = data.content;
-	            var comment_total = data.comments;
-	            var views = data.views;
-				var postDt = data.postDt;
-	            var images = data.images.split('/');
-	            var postNo = data.postNo;
-	            var heartCheck =data.heartCheck;
-	            var hashtag;
-				
-				if( userProfileImg != null ) {
-					$('.profile-img-s img').attr("src", "/init/resources/profileImg/" + userProfileImg);
-				} else {
-					$('.profile-img-s img').attr("src", "/init/resources/profileImg/nulluser.svg");
-				}
-
-				if ( userEmail == email ) {
-					$('.modifyBtn').css('display', 'inline-block');
-					$('.modifyBtn').attr('href', $('.modifyBtn').attr('href')+postNo)
-					$('.deleteBtn').css('display', 'inline-block');
-					$('.deleteBtn').attr('href', $('.deleteBtn').attr('href')+postNo)
-				} else {
-					$('.modifyBtn').css('display', 'none');
-					$('.deleteBtn').css('display', 'none');
-				}
-
-
-	            if (data.hashtag != null) {
-	            	hashtag = data.hashtag.split('#');
-	            }
-	            // image carousel setting
-	           	for( var i = 0; i < images.length-1 ; i++ ){
-	           	    if ( i == 0 ) {
-	                   	$('.Citem').html('<div class="carousel-item active"><img src="/init/images/'+images[i]+'"></div>');
-	                } else {
-	                	$('.Citem').append('<div class="carousel-item"><img src="/init/images/'+images[i]+'"></div>');
-	                }
-	            }
-								
-	            if ( postDt != null ) {
-	               	for ( var i = 0; i < postDt.length; i++ ) {
-						//console.log(postDt[i].location);
-		
-	           			var item = '<div class="mr-1 px-1 location-item border bg-light rounded">'
-								 + '<i class="fa-solid fa-location-dot text-primary"></i>&nbsp;'
-							 	 + postDt[i].location
-							 	 + '&nbsp</div>';
 	
-	               		if( i == 0 ) {
-				   			$('.location').css('height', '28px');
-				   			$('.location').css('display', 'flex');
-				   			$('.location').css('flex-wrap', 'nowrap');
-	            			$('.location').append(item);
-	               		} else {
-	               			$('.location').append(item);
-	               		}
-	               	}
-	            }
-	               
-	               // heart 확인해서 좋아요 누른 게시물은 active 부여
-	           	if( heartCheck == 1 ) {
-	           		$('i.modal-like').addClass('active');
-	           	}
-	           	
-	            if ( hashtag != null) {
-				   	for ( var i = 1; i < hashtag.length; i++ ) {
+});
 
-						var item = '<div class="mr-1 px-1 hashtag-item border bg-light rounded font-italic">'
-								 + '#&nbsp;' + hashtag[i]
-							 	 + '&nbsp</div>';
+$(document).on('click', '.post', function() {
+	var postNo = $(this).attr("data-value");
+	
+	addview(postNo);
+	$('#modalBtn').trigger('click');
+	$.ajax({
+           url:"/init/post/getlist.do",
+           type:"post",
+           data:{
+           	postNo : postNo,
+			email : email
+		},
+		
+		beforeSend: function(xhr){
+ 		   	var token = $("meta[name='_csrf']").attr('content');
+ 			var header = $("meta[name='_csrf_header']").attr('content');
+		        xhr.setRequestHeader(header, token);
+		},
+ 		success:function(data){
+ 			$('#modalBtn').trigger('click');
+            
+ 			// data parsing
+			var userEmail = data.email;
+ 			var userNick=data.userNick;
+            var userProfileImg = data.userProfileImg;
+            var likes = data.likes;
+            var content = data.content;
+            var comment_total = data.comments;
+            var views = data.views;
+			var postDt = data.postDt;
+            var images = data.images.split('/');
+            var postNo = data.postNo;
+            var heartCheck =data.heartCheck;
+            var hashtag;
+			
+			if( userProfileImg != null ) {
+				$('.profile-img-s img').attr("src", "/init/resources/profileImg/" + userProfileImg);
+			} else {
+				$('.profile-img-s img').attr("src", "/init/resources/profileImg/nulluser.svg");
+			}
 
-	               		if( i == 1 ) {
-	               			$('div.hashtag').html(item);
-	               		} else {
-	               			$('div.hashtag').append(item);
-	               		}
-	               	}
-	            }
-	            
-	            $(".nickname>b").html(userNick);
-	            $(".content").html(content);
-	            $(".comment_total span").html(comment_total);
-	            $('.likes span').html(likes);
-	            $('.likes i.modal-like').attr('data-num', postNo);
-	            $('button.addcomment ').attr('data-num', postNo);
-	            $(".views span").html(views);
-	           	
-	 		},
-	 		error: function(data) {
-	 			//console.log("ajax1 처리 실패");
-	 		}
-		});
-		getComments(postNo, email);
+			if ( userEmail == email ) {
+				$('.modifyBtn').css('display', 'inline-block');
+				$('.modifyBtn').attr('href', $('.modifyBtn').attr('href')+postNo)
+				$('.deleteBtn').css('display', 'inline-block');
+				$('.deleteBtn').attr('href', $('.deleteBtn').attr('href')+postNo)
+			} else {
+				$('.modifyBtn').css('display', 'none');
+				$('.deleteBtn').css('display', 'none');
+			}
+
+
+            if (data.hashtag != null) {
+            	hashtag = data.hashtag.split('#');
+            }
+            // image carousel setting
+           	for( var i = 0; i < images.length-1 ; i++ ){
+           	    if ( i == 0 ) {
+                   	$('.Citem').html('<div class="carousel-item active"><img src="/init/images/'+images[i]+'"></div>');
+                } else {
+                	$('.Citem').append('<div class="carousel-item"><img src="/init/images/'+images[i]+'"></div>');
+                }
+            }
+							
+            if ( postDt != null ) {
+               	for ( var i = 0; i < postDt.length; i++ ) {
+					//console.log(postDt[i].location);
+	
+           			var item = '<div class="mr-1 px-1 location-item border bg-light rounded">'
+							 + '<i class="fa-solid fa-location-dot text-primary"></i>&nbsp;'
+						 	 + postDt[i].location
+						 	 + '&nbsp</div>';
+
+               		if( i == 0 ) {
+			   			$('.location').css('height', '28px');
+			   			$('.location').css('display', 'flex');
+			   			$('.location').css('flex-wrap', 'nowrap');
+            			$('.location').append(item);
+               		} else {
+               			$('.location').append(item);
+               		}
+               	}
+            }
+               
+               // heart 확인해서 좋아요 누른 게시물은 active 부여
+           	if( heartCheck == 1 ) {
+           		$('i.modal-like').addClass('active');
+           	}
+           	
+            if ( hashtag != null) {
+			   	for ( var i = 1; i < hashtag.length; i++ ) {
+
+					var item = '<div class="mr-1 px-1 hashtag-item border bg-light rounded font-italic">'
+							 + '#&nbsp;' + hashtag[i]
+						 	 + '&nbsp</div>';
+
+               		if( i == 1 ) {
+               			$('div.hashtag').html(item);
+               		} else {
+               			$('div.hashtag').append(item);
+               		}
+               	}
+            }
+            
+            $(".nickname>b").html(userNick);
+            $(".content").html(content);
+            $(".comment_total span").html(comment_total);
+            $('.likes span').html(likes);
+            $('.likes i.modal-like').attr('data-num', postNo);
+            $('button.addcomment ').attr('data-num', postNo);
+            $(".views span").html(views);
+           	
+ 		},
+ 		error: function(data) {
+ 			//console.log("ajax1 처리 실패");
+ 		}
 	});
+	getComments(postNo, email);
 });
 
 
 function addview(postNo){
+	console.log(email);
 	//console.log(postNo);
 	$.ajax({
 		url :'/init/post/addView.do',
 		data : {
 			postNo : postNo,
-			email : email},
+			email : email
+			},
 		type : 'post',
 		beforeSend: function(xhr){
 	 	   	var token = $("meta[name='_csrf']").attr('content');

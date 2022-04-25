@@ -215,7 +215,7 @@ public class PlanDao implements PlanIDao {
 		} 
 		
 		if ( insertDtDtos.isEmpty() == false ) {	
-			int res2 = sqlSession.insert("insertNullDt", insertDtDtos);
+			int res2 = sqlSession.insert("insertDt", insertDtDtos);
 			result = res2 > 0 ? "success": "failed";
 			logger.info("detailModifyDo result 2 : insertPlanDt ? " + result);	
 		}

@@ -69,10 +69,14 @@ public class SearchController {
 		logger.info("search() in >>>>");
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDto dto = Constant.getUserInfo(authentication);
+		User user = (User)authentication.getPrincipal();
+		String uId = user.getUsername();
+		
+		UserDto udto = udao.login(uId);
+		model.addAttribute("user", udto);
 		
 		
-		ArrayList<PostDto> post = postDao.list(dto.getUserEmail());
+		ArrayList<PostDto> post = postDao.list(udto.getUserEmail());
 		
 		if(post.size()==0) {
 			return "error/nullPage";			
@@ -91,9 +95,13 @@ public class SearchController {
 		logger.info("search() in >>>>");
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDto dto = Constant.getUserInfo(authentication);
+		User user = (User)authentication.getPrincipal();
+		String uId = user.getUsername();
+		
+		UserDto udto = udao.login(uId);
+		model.addAttribute("user", udto);
 
-		ArrayList<PostDto> likeList = postDao.likeList(dto.getUserEmail());
+		ArrayList<PostDto> likeList = postDao.likeList(udto.getUserEmail());
 		
 		if(likeList.size()==0) {
 			return "error/nullPage";			
@@ -109,10 +117,14 @@ public class SearchController {
 		logger.info("search() in >>>>");
 		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		UserDto dto = Constant.getUserInfo(authentication);
+		User user = (User)authentication.getPrincipal();
+		String uId = user.getUsername();
+		
+		UserDto udto = udao.login(uId);
+		model.addAttribute("user", udto);
 		
 		
-		ArrayList<PostDto> viewList = postDao.viewList(dto.getUserEmail());
+		ArrayList<PostDto> viewList = postDao.viewList(udto.getUserEmail());
 		
 		if(viewList.size()==0) {
 			return "error/nullPage";			

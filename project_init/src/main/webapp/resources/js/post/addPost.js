@@ -160,6 +160,17 @@ $(document).ready(function() {
 		let count = element.val().split('#').length-1;
 		let hashtag = element.val().split('#');
 		let result = '';
+		let hashCheck =element.val().substr(0,1);
+		var pattern = /\s/g;
+
+		if(hashCheck !=='#'){
+			alert('해쉬태그는 #을 붙여주세요! ');
+			element.val('#');
+		}
+		
+		if ( element.val().match(pattern) ) {
+			element.val(element.val().replace(/\s/g, '#'));
+		}
 		
 		if(count>=11){
 
@@ -203,7 +214,7 @@ $(document).ready(function() {
 		changeData = $('.img')[0].files;
 		imgView='';
 		for(var i=0; i<changeData.length; i++){
-			imgView +='<img src="'+URL.createObjectURL(changeData[i])+'" style="width :23%">'
+			imgView +='<img src="'+URL.createObjectURL(changeData[i])+'" style="width :23%; max-height: 150px;">'
 			imgView +='<i class="fa-solid fa-x reimg" index="'+i+'"></i>';
 			imgView +='<br/>';
 		}
@@ -241,11 +252,19 @@ $(document).ready(function() {
 				alert('이미지의 총 용량이 10MB를 초과합니다.\n 다른 이미지를 올려주세요');
 			
 		} else {
-			let fileArray = Array.from(arr); //변수에 할당된 파일을 배열로 변환(FileList -> Array) 
-			for(var i=0; i<arr2.length; i++){				
-				fileArray.push(arr2[i]);				
-			}
+			let fileArray = Array.from(arr); //변수에 할당된 파일을 배열로 변환(FileList -> Array)
 			
+			for(var i=0; i<arr2.length; i++){            
+            	extension = arr2[i].name.substring(arr2[i].name.lastIndexOf('.')+1).toLowerCase(); //확장자명 추출
+
+            	if(extension =='jpg' || extension =='jpeg' || extension =='png'){   //확장자 확인      
+               		fileArray.push(arr2[i]);            
+            
+            	}else{
+               		alert(arr2[i].name+'은 지원하지 않은 확장자 파일입니다.');
+            	}
+         	}
+
 			fileArray.forEach(file => { dataTransfer.items.add(file); }); //남은 배열을 dataTransfer로 처리(Array -> FileList) 
 			$('.img')[0].files = dataTransfer.files; 
 			arr = $('.img')[0].files;
@@ -257,7 +276,7 @@ $(document).ready(function() {
 		
 		for(var i=0; i<arr.length; i++){
 			
-			imgView +='<img src="'+URL.createObjectURL(arr[i])+'" style="width :23%">'
+			imgView +='<img src="'+URL.createObjectURL(arr[i])+'" style="width :23%; max-height: 150px;">'
 			imgView +='<i class="fa-solid fa-x reimg" index="'+i+'"></i>';
 			imgView +='<br/>'
 		}
@@ -274,31 +293,21 @@ $(document).ready(function() {
 
 function checkfrm() { 
 	
+	var files = $('.img')[0].files;
+	
 	if ($('.content').val() == '') {
 		alert('포스트 내용을 입력해주세요.');
 		$('.content').focus();
 		return false;
 	}
+
+	else if (files.length == 0 ){
+		alert('한 장 이상의 사진을 등록해주세요.');
+		return false;
+	}
+
 	
 	else {
-		var	dtNums = $('.delLocBtn').length;
-		var target1 = $('input.planDtNum');
-		var target2 = $('input.location');
-
-		if ( dtNums != 0 ) {
-			for(var i = 0; i < Number(dtNums); i++ ) {
-				var dtNum = $('.delLocBtn').eq(i).attr('data-index');
-				
-				if ( i == 0 ) {
-					target1.val(dtNum);
-					console.log($('.location-item').eq(i).text());
-				} else {
-					target1.val(target1.val() + '/' + dtNum);
-					console.log($('>' + '.location-item').eq(i).text());
-				}
-			}
-		}
-
 		$('#addForm').submit();
 	}
 }

@@ -137,15 +137,6 @@ function getClose(lat, lon) {
 	})
 }
 
-$(document).ready(function() {
-
-	if ( lat === undefined ) {
-		lat = '37.5666805';
-		lon = '126.9784147';
-	}
-	
-	getClose(lat, lon);
-})
 
 </script>
 </head>

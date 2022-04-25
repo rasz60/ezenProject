@@ -41,13 +41,14 @@ public class PostDao implements PostIDao {
 		logger.info("write(" + dto.getEmail() + ") in >>>");
 		
 		sqlSession.insert("write", dto);
-
-		for(int i = 0; i < dtDtos.size(); i++ ) {
-			dtDtos.get(i).setPostNo(Integer.parseInt(dto.getPostNo()));
+		
+		if ( dtDtos.size() != 0 ) {
+			for(int i = 0; i < dtDtos.size(); i++ ) {
+				dtDtos.get(i).setPostNo(Integer.parseInt(dto.getPostNo()));
+			}
+			
+			sqlSession.insert("insertPostDt", dtDtos);
 		}
-		
-		sqlSession.insert("insertPostDt", dtDtos);
-		
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -232,8 +233,7 @@ public class PostDao implements PostIDao {
 	}
 	
 	public int countPost (String email) {
-		int res = sqlSession.selectOne("countPlanMst", email);
-		
+		int res = sqlSession.selectOne("countPost", email);
 		System.out.println(res);
 
 		return res;

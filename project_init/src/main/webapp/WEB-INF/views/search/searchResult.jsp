@@ -62,7 +62,9 @@ img {
 }
 
 .post-top {
+	max-height: 320px;
 	line-height: 320px;
+	overflow: hidden;
 }
 
 .post-top img {
@@ -75,10 +77,12 @@ img {
 }
 
 #post-profile {
+	text-align: center;
 	margin-left: 4px;
 	border-radius: 50%;
 	width: 35px;
 	height: 35px;
+	overflow: hidden;
 }
 
 #post-profile img {
@@ -113,7 +117,7 @@ posts.push(post);
 </c:forEach>
 
 var email = '<c:out value="${user.userEmail}" />';
-
+console.log(email);
 </script>
 
 </head>
@@ -229,7 +233,8 @@ if ( posts.length > 20 ) {
 
 $('.post').click(function() {
 	var postNo = $(this).attr("data-value");
-	console.log(postNo);
+
+	addview(postNo);
 	
 	$('#modalBtn').trigger('click');
 	$.ajax({
@@ -348,6 +353,28 @@ $('.post').click(function() {
 	});
 	getComments(postNo, email);
 });
+
+
+function addview(postNo){
+	//console.log(postNo);
+	$.ajax({
+		url :'/init/post/addView.do',
+		data : {
+			postNo : postNo,
+			email : email},
+		type : 'post',
+		beforeSend: function(xhr){
+	 	   	var token = $("meta[name='_csrf']").attr('content');
+	 		var header = $("meta[name='_csrf_header']").attr('content');
+ 		    xhr.setRequestHeader(header, token);
+ 		},
+		success : function () {
+		},
+		error : function () {
+			//console.log('failed view up');
+		}
+	})
+};
 
 
 function getComments(postNo, email) {
