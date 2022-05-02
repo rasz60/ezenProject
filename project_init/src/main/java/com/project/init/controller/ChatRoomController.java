@@ -43,6 +43,7 @@ public class ChatRoomController {
 	public void setUdao(UserDao udao) {
 		this.udao = udao;
 		Constant.udao = udao;
+		
 	}
 	
 	private ICommand mcom;
